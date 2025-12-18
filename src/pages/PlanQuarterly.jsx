@@ -8,44 +8,45 @@ import Sidebar from '../components/Sidebar';
 import Loader from '../components/Loader';
 import Footer from '../components/Footer';
 import axios from 'axios';
-import TimelineCard from '../components/timeline/TimelineCard';
+import PlanQtrCard from '../components/planQtr/PlanQtrCard';
 
 
-const MyTimeline = () => {
+const PlanQuarterly = () => {
   const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
   const modalRef = useRef(null);
   const { user } = useContext(AuthContext);
   const [title, setTitle] = useState('');
   const [desc, setDescription] = useState('');
-  const [timelines, setTimelines] = useState([]);
+  const [quarter, setQuarter] = useState('');
+  const [planQtrs, setPlanQtrs] = useState([]);
   const [filter, setFilter] = useState('all');
   const [errors, setErrors] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editTimelineId, setEditTimelineId] = useState(null);
+  const [editPlanQtrId, setEditPlanQtrId] = useState(null);
   const [loading, setLoading] = useState({ page: true, action: false });
   const bsModalRef = useRef(null);
 
 
-  const fetchTimelines = async () => {
+  const fetchPlanQtrs = async () => {
     try {
       setLoading(prev => ({ ...prev, page: true }));
-      const response = await axios.get(`${VITE_BASE_URL}/api/timeline`);
-      setTimelines(response.data);
+      const response = await axios.get(`${VITE_BASE_URL}/api/planQtr`);
+      setPlanQtrs(response.data);
     } catch (err) {
-      console.error('Error fetching timelines:', err);
-      toast.error('Failed to load timelines');
+      console.error('Error fetching planQtrs:', err);
+      toast.error('Failed to load planQtrs');
     } finally {
       setLoading(prev => ({ ...prev, page: false }));
     }
   };
 
   useEffect(() => {
-    fetchTimelines();
+    fetchPlanQtrs();
   }, []);
 
 
 
-  // const handleAddTimeline = () => {
+  // const handleAddPlanQtr = () => {
   //   const modalElement = modalRef.current;
   //   if (modalElement) {
   //     const modal = new window.bootstrap.Modal(modalElement);
@@ -55,21 +56,22 @@ const MyTimeline = () => {
   //   }
   // };
 
-  const handleAddTimeline = () => {
+  const handleAddPlanQtr = () => {
     setTitle('');
     setDescription('');
     setErrors({});
     setIsEditMode(false);
-    setEditTimelineId(null);
+    setEditPlanQtrId(null);
     const modal = new window.bootstrap.Modal(modalRef.current);
     bsModalRef.current = modal;
     modal.show();
   };
 
-  const handleEditTimeline = (timeline) => {
-    setTitle(timeline.title);
-    setDescription(timeline.desc);
-    setEditTimelineId(timeline._id);
+  const handleEditPlanQtr = (planQtr) => {
+    setTitle(planQtr.title);
+    setDescription(planQtr.desc);
+    setQuarter(planQtr.quarter);
+    setEditPlanQtrId(planQtr._id);
     setIsEditMode(true);
     setErrors({});
     const modal = new window.bootstrap.Modal(modalRef.current);
@@ -77,58 +79,60 @@ const MyTimeline = () => {
     modal.show();
   };
 
-  const updateTimeline = async () => {
+  const updatePlanQtr = async () => {
     if (!validate()) return;
     try {
-      const res = await axios.put(`${VITE_BASE_URL}/api/timeline/${editTimelineId}`, {
+      const res = await axios.put(`${VITE_BASE_URL}/api/planQtr/${editPlanQtrId}`, {
         title,
-        desc
+        desc,
+        quarter
       });
       if (res.data.success) {
-        setTimelines(prev =>
-          prev.map(n => (n._id === editTimelineId ? { ...n, title, desc } : n))
+        setPlanQtrs(prev =>
+          prev.map(n => (n._id === editPlanQtrId ? { ...n, title, desc } : n))
         );
-        toast.success("Timeline updated");
+        toast.success("PlanQtr updated");
         setTitle('');
         setDescription('');
         setIsEditMode(false);
-        setEditTimelineId(null);
+        setEditPlanQtrId(null);
         bsModalRef.current?.hide();
       } else {
         toast.error(res.data.message || "Update failed");
       }
     } catch (err) {
-      console.error("Error updating timeline:", err);
-      toast.error("Server error while updating timeline");
+      console.error("Error updating planQtr:", err);
+      toast.error("Server error while updating planQtr");
     }
   };
 
-  const saveTimeline = async () => {
+  const savePlanQtr = async () => {
     if (!validate()) return;
 
     // setLoading(prev => ({ ...prev, action: true }));
     try {
-      const response = await axios.post(`${VITE_BASE_URL}/api/timeline/add`, {
+      const response = await axios.post(`${VITE_BASE_URL}/api/planQtr/add`, {
         title,
         desc,
+        quarter,
         uname: user?.uname
       });
 
       const result = response.data;
       if (!result.success) {
-        toast.error(result.message || 'Failed to save timeline');
+        toast.error(result.message || 'Failed to save planQtr');
         return;
       }
 
-      setTimelines(prevTimelines => [result.timeline, ...prevTimelines]);
+      setPlanQtrs(prevPlanQtrs => [result.planQtr, ...prevPlanQtrs]);
       setTitle('');
       setDescription('');
       setErrors({});
       bsModalRef.current?.hide();
-      toast.success('Timeline saved successfully!');
+      toast.success('PlanQtr saved successfully!');
     } catch (error) {
       console.error('Save error:', error);
-      toast.error("Failed to save timeline.");
+      toast.error("Failed to save planQtr.");
     } finally {
       // setLoading(prev => ({ ...prev, action: false }));
     }
@@ -136,38 +140,59 @@ const MyTimeline = () => {
 
 
 
-  const handleRemoveTimeline = async (id) => {
+  const handleRemovePlanQtr = async (id) => {
     // setLoading(prev => ({ ...prev, action: true }));
     try {
-      await axios.delete(`${VITE_BASE_URL}/api/timeline/${id}`);
-      setTimelines(prev => prev.filter(n => n._id !== id));
-      toast.success("Timeline deleted successfully!");
+      await axios.delete(`${VITE_BASE_URL}/api/planQtr/${id}`);
+      setPlanQtrs(prev => prev.filter(n => n._id !== id));
+      toast.success("PlanQtr deleted successfully!");
     } catch (err) {
       console.error("Delete failed:", err);
-      toast.error("Failed to delete timeline.");
+      toast.error("Failed to delete planQtr.");
     } finally {
       // setLoading(prev => ({ ...prev, action: false }));
     }
   };
 
 
-  const getFilteredTimelines = () => {
-    if (filter === 'fav') return timelines.filter(timeline => timeline.isFav);
+  // const getFilteredPlanQtrs = () => {
+  //   if (filter === 'fav') return planQtrs.filter(planQtr => planQtr.isFav);
+  //   if (filter.startsWith('tag:')) {
+  //     const tag = filter.split(':')[1];
+  //     return planQtrs.filter(planQtr => planQtr.tag === tag);
+  //   }
+  //   return planQtrs;
+  // };
+
+  const getFilteredPlanQtrs = () => {
+    if (filter === 'all') return planQtrs;
+
+    if (filter.startsWith('q:')) {
+      const q = Number(filter.split(':')[1]);
+      return planQtrs.filter(p => p.quarter === q);
+    }
+
     if (filter.startsWith('tag:')) {
       const tag = filter.split(':')[1];
-      return timelines.filter(timeline => timeline.tag === tag);
+      return planQtrs.filter(p => p.tag === tag);
     }
-    return timelines;
+
+    if (filter === 'fav') {
+      return planQtrs.filter(p => p.isFav);
+    }
+
+    return planQtrs;
   };
+
 
   const handleFavToggle = async (id, newIsFav) => {
     try {
-      await axios.put(`${VITE_BASE_URL}/api/timeline/fav/${id}`, {
+      await axios.put(`${VITE_BASE_URL}/api/planQtr/fav/${id}`, {
         isFav: newIsFav,
       });
-      setTimelines(prev =>
-        prev.map(timeline =>
-          timeline._id === id ? { ...timeline, isFav: newIsFav } : timeline
+      setPlanQtrs(prev =>
+        prev.map(planQtr =>
+          planQtr._id === id ? { ...planQtr, isFav: newIsFav } : planQtr
         )
       );
       toast.success("Favourite status updated");
@@ -181,12 +206,12 @@ const MyTimeline = () => {
 
   const handleTagChange = async (id, newTag) => {
     try {
-      await axios.put(`${VITE_BASE_URL}/api/timeline/tag/${id}`, {
+      await axios.put(`${VITE_BASE_URL}/api/planQtr/tag/${id}`, {
         tag: newTag,
       });
-      setTimelines(prev =>
-        prev.map(timeline =>
-          timeline._id === id ? { ...timeline, tag: newTag } : timeline
+      setPlanQtrs(prev =>
+        prev.map(planQtr =>
+          planQtr._id === id ? { ...planQtr, tag: newTag } : planQtr
         )
       );
       toast.success("Tag updated");
@@ -199,10 +224,25 @@ const MyTimeline = () => {
   const validate = () => {
     const newErrors = {};
     if (!title.trim()) newErrors.title = 'Title is required';
+    if (!quarter) newErrors.quarter = 'Quarter is required';
     if (!desc || desc.trim() === '' || desc === '<p>&nbsp;</p>') newErrors.desc = 'Description is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  // const quarterOptions = [
+  //   { label: "1st Quarter", value: "q1", dot: "banking" },
+  //   { label: "2nd Quarter", value: "q2", dot: "agri" },
+  //   { label: "3rd Quarter", value: "q3", dot: "health" },
+  //   { label: "4th Quarter", value: "q4", dot: "business" }
+  // ];
+
+  const quarterOptions = [
+    { label: "Done", value: "done", dot: "banking" },
+    { label: "Pending", value: "pending", dot: "agri" },
+    { label: "Important", value: "important", dot: "health" },
+    { label: "Trash", value: "trash", dot: "business" }
+  ];
 
   return (
 
@@ -230,7 +270,7 @@ const MyTimeline = () => {
                       <div className="row">
                         <div className="col-md-12 text-center">
                           <a className="btn btn-dark" href="#"
-                            onClick={(e) => { e.preventDefault(); handleAddTimeline(); }}>
+                            onClick={(e) => { e.preventDefault(); handleAddPlanQtr(); }}>
                             Add
                           </a>
                         </div>
@@ -238,19 +278,38 @@ const MyTimeline = () => {
                           <ul className="nav nav-pills d-block" role="tablist">
                             <li className="nav-item">
                               <a className="nav-link list-actions" onClick={() => setFilter('all')}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-edit">
+                                {/* <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-edit">
                                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                </svg> All Timelines
+                                </svg> */}
+                                All Plan Qtrs
                               </a>
                             </li>
                             <li className="nav-item">
-                              <a className="nav-link list-actions" onClick={() => setFilter('fav')}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-star">
+                              <a className="nav-link list-actions" onClick={() => setFilter('q:3')}>
+                                {/* <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-star">
                                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                </svg> Favourites
+                                </svg> */}
+                                3 Months
                               </a>
                             </li>
+                            <li className="nav-item">
+                              <a className="nav-link list-actions" onClick={() => setFilter('q:6')}>
+                                {/* <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-star">
+                                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>  */}
+                                6 Months
+                              </a>
+                            </li>
+                            <li className="nav-item">
+                              <a className="nav-link list-actions" onClick={() => setFilter('q:9')}>
+                                {/* <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-star">
+                                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>  */}
+                                9 Months
+                              </a>
+                            </li>
+
                           </ul>
                           <hr />
                           <p className="group-section">
@@ -260,56 +319,46 @@ const MyTimeline = () => {
                             </svg> Type
                           </p>
                           <ul className="nav nav-pills d-block group-list">
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-primary" onClick={() => setFilter('tag:personal')}>Personal</a>
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+                            {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-warning" onClick={() => setFilter('tag:work')}>Work</a>
-                            </li>
+                            </li> */}
                             {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-success" onClick={() => setFilter('tag:social')}>Social</a>
                             </li> */}
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-danger" onClick={() => setFilter('tag:important')}>Important</a>
-                            </li>
+                            </li> */}
                             {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-bibilical" onClick={() => setFilter('tag:bibilical')}>Bibilical</a>
                             </li> */}
                           </ul>
                           <ul className="nav nav-pills d-block group-list">
-                            {[
-                              "banking",
-                              "agri",
-                              "health",
-                              "business",
-                              // "allopathy",
-                              // "ayurvedam",
-                              // "homio",
-                              // "electronics",
-                              "software",
-                              "general"
-                            ].map((t) => (
-                              <li className="nav-item" key={t}>
+                            {quarterOptions.map(q => (
+                              <li className="nav-item" key={q.value}>
                                 <a
-                                  className={`nav-link list-actions g-dot-${t}`}
-                                  onClick={() => setFilter(`tag:${t}`)}
+                                  className={`nav-link list-actions g-dot-${q.dot}`}
+                                  onClick={() => setFilter(`tag:${q.value}`)}
                                 >
-                                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                                  {q.label}
                                 </a>
                               </li>
                             ))}
                           </ul>
+
 
                         </div>
                       </div>
                     </div>
 
                     <div id="ct" className="note-container note-grid">
-                      {getFilteredTimelines().length === 0 ? (
-                        <p>No timelines found.</p>
+                      {getFilteredPlanQtrs().length === 0 ? (
+                        <p>No plan Qtrs found.</p>
                       ) : (
-                        getFilteredTimelines().map(timeline => (
-                          <TimelineCard key={timeline._id} timeline={timeline} onDelete={handleRemoveTimeline} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditTimeline} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />
+                        getFilteredPlanQtrs().map(planQtr => (
+                          <PlanQtrCard key={planQtr._id} planQtr={planQtr} onDelete={handleRemovePlanQtr} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditPlanQtr} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />
                         ))
                       )}
                     </div>
@@ -346,6 +395,24 @@ const MyTimeline = () => {
                                   />
                                 </div>
                                 <div className="col-md-12 mb-2">
+                                  <label className={`form-label ${errors.quarter ? 'text-danger' : ''}`}>
+                                    Quarter <span className="text-danger">*</span>
+                                  </label>
+
+                                  <select
+                                    className={`form-control ${errors.quarter ? 'border border-danger' : ''}`}
+                                    value={quarter}
+                                    onChange={(e) => setQuarter(Number(e.target.value))}
+                                  >
+                                    <option value="" hidden>Select Quarter</option>
+                                    <option value="3">3 Months</option>
+                                    <option value="6">6 Months</option>
+                                    <option value="9">9 Months</option>
+                                  </select>
+                                </div>
+
+
+                                <div className="col-md-12 mb-2">
                                   <label className={`form-label ${errors.desc ? 'text-danger' : ''}`}>
                                     Description <span className="text-danger">*</span>
                                   </label>
@@ -355,7 +422,7 @@ const MyTimeline = () => {
                                       config={{ licenseKey: "GPL" }}
                                       data={desc}
                                       onReady={(editor) => {
-                                        // console.log("Timelines CKEditor ready!", editor);
+                                        // console.log("PlanQtrs CKEditor ready!", editor);
                                       }}
                                       onChange={(event, editor) => {
                                         const data = editor.getData();
@@ -376,7 +443,7 @@ const MyTimeline = () => {
                           setDescription('');
                           bsModalRef.current?.hide();
                         }}>Discard</button>
-                        <button className="btn btn-primary" onClick={isEditMode ? updateTimeline : saveTimeline}>{isEditMode ? 'Update' : 'Add'}</button>
+                        <button className="btn btn-primary" onClick={isEditMode ? updatePlanQtr : savePlanQtr}>{isEditMode ? 'Update' : 'Add'}</button>
                       </div>
                     </div>
                   </div>
@@ -392,4 +459,4 @@ const MyTimeline = () => {
   );
 };
 
-export default MyTimeline;
+export default PlanQuarterly;

@@ -3,50 +3,49 @@ import { AuthContext } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import NoteCard from '../components/notes/NoteCard';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import Loader from '../components/Loader';
 import Footer from '../components/Footer';
 import axios from 'axios';
-// import '../assets/css/apps/notes.css';
+import BudgetQtrCard from '../components/budgetQtr/BudgetQtrCard';
 
 
-const Notes = () => {
+const BudgetQuarterly = () => {
   const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
   const modalRef = useRef(null);
   const { user } = useContext(AuthContext);
   const [title, setTitle] = useState('');
   const [desc, setDescription] = useState('');
-  const [notes, setNotes] = useState([]);
+  const [budgetQtrs, setBudgetQtrs] = useState([]);
   const [filter, setFilter] = useState('all');
   const [errors, setErrors] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editNoteId, setEditNoteId] = useState(null);
+  const [editBudgetQtrId, setEditBudgetQtrId] = useState(null);
   const [loading, setLoading] = useState({ page: true, action: false });
   const bsModalRef = useRef(null);
 
 
-  const fetchNotes = async () => {
+  const fetchBudgetQtrs = async () => {
     try {
       setLoading(prev => ({ ...prev, page: true }));
-      const response = await axios.get(`${VITE_BASE_URL}/api/notes`);
-      setNotes(response.data);
+      const response = await axios.get(`${VITE_BASE_URL}/api/budgetQtr`);
+      setBudgetQtrs(response.data);
     } catch (err) {
-      console.error('Error fetching notes:', err);
-      toast.error('Failed to load notes');
+      console.error('Error fetching budgetQtrs:', err);
+      toast.error('Failed to load budgetQtrs');
     } finally {
       setLoading(prev => ({ ...prev, page: false }));
     }
   };
 
   useEffect(() => {
-    fetchNotes();
+    fetchBudgetQtrs();
   }, []);
 
 
 
-  // const handleAddNote = () => {
+  // const handleAddBudgetQtr = () => {
   //   const modalElement = modalRef.current;
   //   if (modalElement) {
   //     const modal = new window.bootstrap.Modal(modalElement);
@@ -56,21 +55,21 @@ const Notes = () => {
   //   }
   // };
 
-  const handleAddNote = () => {
+  const handleAddBudgetQtr = () => {
     setTitle('');
     setDescription('');
     setErrors({});
     setIsEditMode(false);
-    setEditNoteId(null);
+    setEditBudgetQtrId(null);
     const modal = new window.bootstrap.Modal(modalRef.current);
     bsModalRef.current = modal;
     modal.show();
   };
 
-  const handleEditNote = (note) => {
-    setTitle(note.title);
-    setDescription(note.desc);
-    setEditNoteId(note._id);
+  const handleEditBudgetQtr = (budgetQtr) => {
+    setTitle(budgetQtr.title);
+    setDescription(budgetQtr.desc);
+    setEditBudgetQtrId(budgetQtr._id);
     setIsEditMode(true);
     setErrors({});
     const modal = new window.bootstrap.Modal(modalRef.current);
@@ -78,38 +77,38 @@ const Notes = () => {
     modal.show();
   };
 
-  const updateNote = async () => {
+  const updateBudgetQtr = async () => {
     if (!validate()) return;
     try {
-      const res = await axios.put(`${VITE_BASE_URL}/api/notes/${editNoteId}`, {
+      const res = await axios.put(`${VITE_BASE_URL}/api/budgetQtr/${editBudgetQtrId}`, {
         title,
         desc
       });
       if (res.data.success) {
-        setNotes(prev =>
-          prev.map(n => (n._id === editNoteId ? { ...n, title, desc } : n))
+        setBudgetQtrs(prev =>
+          prev.map(n => (n._id === editBudgetQtrId ? { ...n, title, desc } : n))
         );
-        toast.success("Note updated");
+        toast.success("BudgetQtr updated");
         setTitle('');
         setDescription('');
         setIsEditMode(false);
-        setEditNoteId(null);
+        setEditBudgetQtrId(null);
         bsModalRef.current?.hide();
       } else {
         toast.error(res.data.message || "Update failed");
       }
     } catch (err) {
-      console.error("Error updating note:", err);
-      toast.error("Server error while updating note");
+      console.error("Error updating budgetQtr:", err);
+      toast.error("Server error while updating budgetQtr");
     }
   };
 
-  const saveNote = async () => {
+  const saveBudgetQtr = async () => {
     if (!validate()) return;
 
     // setLoading(prev => ({ ...prev, action: true }));
     try {
-      const response = await axios.post(`${VITE_BASE_URL}/api/notes/add`, {
+      const response = await axios.post(`${VITE_BASE_URL}/api/budgetQtr/add`, {
         title,
         desc,
         uname: user?.uname
@@ -117,19 +116,19 @@ const Notes = () => {
 
       const result = response.data;
       if (!result.success) {
-        toast.error(result.message || 'Failed to save note');
+        toast.error(result.message || 'Failed to save budgetQtr');
         return;
       }
 
-      setNotes(prevNotes => [result.note, ...prevNotes]);
+      setBudgetQtrs(prevBudgetQtrs => [result.budgetQtr, ...prevBudgetQtrs]);
       setTitle('');
       setDescription('');
       setErrors({});
       bsModalRef.current?.hide();
-      toast.success('Note saved successfully!');
+      toast.success('BudgetQtr saved successfully!');
     } catch (error) {
       console.error('Save error:', error);
-      toast.error("Failed to save note.");
+      toast.error("Failed to save budgetQtr.");
     } finally {
       // setLoading(prev => ({ ...prev, action: false }));
     }
@@ -137,38 +136,38 @@ const Notes = () => {
 
 
 
-  const handleRemoveNote = async (id) => {
+  const handleRemoveBudgetQtr = async (id) => {
     // setLoading(prev => ({ ...prev, action: true }));
     try {
-      await axios.delete(`${VITE_BASE_URL}/api/notes/${id}`);
-      setNotes(prev => prev.filter(n => n._id !== id));
-      toast.success("Note deleted successfully!");
+      await axios.delete(`${VITE_BASE_URL}/api/budgetQtr/${id}`);
+      setBudgetQtrs(prev => prev.filter(n => n._id !== id));
+      toast.success("BudgetQtr deleted successfully!");
     } catch (err) {
       console.error("Delete failed:", err);
-      toast.error("Failed to delete note.");
+      toast.error("Failed to delete budgetQtr.");
     } finally {
       // setLoading(prev => ({ ...prev, action: false }));
     }
   };
 
 
-  const getFilteredNotes = () => {
-    if (filter === 'fav') return notes.filter(note => note.isFav);
+  const getFilteredBudgetQtrs = () => {
+    if (filter === 'fav') return budgetQtrs.filter(budgetQtr => budgetQtr.isFav);
     if (filter.startsWith('tag:')) {
       const tag = filter.split(':')[1];
-      return notes.filter(note => note.tag === tag);
+      return budgetQtrs.filter(budgetQtr => budgetQtr.tag === tag);
     }
-    return notes;
+    return budgetQtrs;
   };
 
   const handleFavToggle = async (id, newIsFav) => {
     try {
-      await axios.put(`${VITE_BASE_URL}/api/notes/fav/${id}`, {
+      await axios.put(`${VITE_BASE_URL}/api/budgetQtr/fav/${id}`, {
         isFav: newIsFav,
       });
-      setNotes(prev =>
-        prev.map(note =>
-          note._id === id ? { ...note, isFav: newIsFav } : note
+      setBudgetQtrs(prev =>
+        prev.map(budgetQtr =>
+          budgetQtr._id === id ? { ...budgetQtr, isFav: newIsFav } : budgetQtr
         )
       );
       toast.success("Favourite status updated");
@@ -182,12 +181,12 @@ const Notes = () => {
 
   const handleTagChange = async (id, newTag) => {
     try {
-      await axios.put(`${VITE_BASE_URL}/api/notes/tag/${id}`, {
+      await axios.put(`${VITE_BASE_URL}/api/budgetQtr/tag/${id}`, {
         tag: newTag,
       });
-      setNotes(prev =>
-        prev.map(note =>
-          note._id === id ? { ...note, tag: newTag } : note
+      setBudgetQtrs(prev =>
+        prev.map(budgetQtr =>
+          budgetQtr._id === id ? { ...budgetQtr, tag: newTag } : budgetQtr
         )
       );
       toast.success("Tag updated");
@@ -204,6 +203,13 @@ const Notes = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  const quarterOptions = [
+    { label: "1st Quarter", value: "q1", dot: "banking" },
+    { label: "2nd Quarter", value: "q2", dot: "agri" },
+    { label: "3rd Quarter", value: "q3", dot: "health" },
+    { label: "4th Quarter", value: "q4", dot: "business" }
+  ];
 
   return (
 
@@ -231,7 +237,7 @@ const Notes = () => {
                       <div className="row">
                         <div className="col-md-12 text-center">
                           <a className="btn btn-dark" href="#"
-                            onClick={(e) => { e.preventDefault(); handleAddNote(); }}>
+                            onClick={(e) => { e.preventDefault(); handleAddBudgetQtr(); }}>
                             Add
                           </a>
                         </div>
@@ -242,7 +248,7 @@ const Notes = () => {
                                 <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-edit">
                                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                </svg> All Notes
+                                </svg> All Budget Qtrs
                               </a>
                             </li>
                             <li className="nav-item">
@@ -258,59 +264,49 @@ const Notes = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-tag">
                               <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
                               <line x1={7} y1={7} x2={7} y2={7} />
-                            </svg> Tags
+                            </svg> Type
                           </p>
                           <ul className="nav nav-pills d-block group-list">
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-primary" onClick={() => setFilter('tag:personal')}>Personal</a>
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+                            {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-warning" onClick={() => setFilter('tag:work')}>Work</a>
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+                            {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-success" onClick={() => setFilter('tag:social')}>Social</a>
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+                            {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-danger" onClick={() => setFilter('tag:important')}>Important</a>
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+                            {/* <li className="nav-item">
                               <a className="nav-link list-actions g-dot-bibilical" onClick={() => setFilter('tag:bibilical')}>Bibilical</a>
-                            </li>
+                            </li> */}
                           </ul>
                           <ul className="nav nav-pills d-block group-list">
-  {[
-    "banking",
-    "agri",
-    "health",
-    "business",
-    "allopathy",
-    "ayurvedam",
-    "homio",
-    "electronics",
-    "software",
-    "general"
-  ].map((t) => (
-    <li className="nav-item" key={t}>
-      <a
-        className={`nav-link list-actions g-dot-${t}`}
-        onClick={() => setFilter(`tag:${t}`)}
-      >
-        {t.charAt(0).toUpperCase() + t.slice(1)}
-      </a>
-    </li>
-  ))}
-</ul>
+                            {quarterOptions.map(q => (
+                              <li className="nav-item" key={q.value}>
+                                <a
+                                  className={`nav-link list-actions g-dot-${q.dot}`}
+                                  onClick={() => setFilter(`tag:${q.value}`)}
+                                >
+                                  {q.label}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+
 
                         </div>
                       </div>
                     </div>
 
                     <div id="ct" className="note-container note-grid">
-                      {getFilteredNotes().length === 0 ? (
-                        <p>No notes found.</p>
+                      {getFilteredBudgetQtrs().length === 0 ? (
+                        <p>No budget Qtrs found.</p>
                       ) : (
-                        getFilteredNotes().map(note => (
-                          <NoteCard key={note._id} note={note} onDelete={handleRemoveNote} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditNote} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />
+                        getFilteredBudgetQtrs().map(budgetQtr => (
+                          <BudgetQtrCard key={budgetQtr._id} budgetQtr={budgetQtr} onDelete={handleRemoveBudgetQtr} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditBudgetQtr} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />
                         ))
                       )}
                     </div>
@@ -335,35 +331,35 @@ const Notes = () => {
                             <form onSubmit={(e) => e.preventDefault()}>
                               <div className="row">
                                 <div className="col-md-12 mb-2">
-  <label className={`form-label ${errors.title ? 'text-danger' : ''}`}>
-    Title <span className="text-danger">*</span>
-  </label>
-  <input
-    type="text"
-    className={`form-control ${errors.title ? 'border border-danger' : ''}`}
-    placeholder="Title"
-    value={title}
-    onChange={(e) => setTitle(e.target.value)}
-  />
-</div>
+                                  <label className={`form-label ${errors.title ? 'text-danger' : ''}`}>
+                                    Title <span className="text-danger">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={`form-control ${errors.title ? 'border border-danger' : ''}`}
+                                    placeholder="Title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                  />
+                                </div>
                                 <div className="col-md-12 mb-2">
-  <label className={`form-label ${errors.desc ? 'text-danger' : ''}`}>
-    Description <span className="text-danger">*</span>
-  </label>
-  <div className={`${errors.desc ? 'border border-danger rounded' : ''}`}>
-    <CKEditor
-      editor={ClassicEditor}
-      config={{ licenseKey: "GPL" }}
-      data={desc}
-      onReady={(editor) => {
-        // console.log("Notes CKEditor ready!", editor);
-      }}
-      onChange={(event, editor) => {
-        const data = editor.getData();
-        setDescription(data);
-      }}
-    />
-  </div>
+                                  <label className={`form-label ${errors.desc ? 'text-danger' : ''}`}>
+                                    Description <span className="text-danger">*</span>
+                                  </label>
+                                  <div className={`${errors.desc ? 'border border-danger rounded' : ''}`}>
+                                    <CKEditor
+                                      editor={ClassicEditor}
+                                      config={{ licenseKey: "GPL" }}
+                                      data={desc}
+                                      onReady={(editor) => {
+                                        // console.log("BudgetQtrs CKEditor ready!", editor);
+                                      }}
+                                      onChange={(event, editor) => {
+                                        const data = editor.getData();
+                                        setDescription(data);
+                                      }}
+                                    />
+                                  </div>
 
                                 </div>
                               </div>
@@ -377,7 +373,7 @@ const Notes = () => {
                           setDescription('');
                           bsModalRef.current?.hide();
                         }}>Discard</button>
-                        <button className="btn btn-primary" onClick={isEditMode ? updateNote : saveNote}>{isEditMode ? 'Update' : 'Add'}</button>
+                        <button className="btn btn-primary" onClick={isEditMode ? updateBudgetQtr : saveBudgetQtr}>{isEditMode ? 'Update' : 'Add'}</button>
                       </div>
                     </div>
                   </div>
@@ -393,4 +389,4 @@ const Notes = () => {
   );
 };
 
-export default Notes;
+export default BudgetQuarterly;

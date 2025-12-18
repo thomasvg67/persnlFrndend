@@ -53,13 +53,13 @@ const Navbar = () => {
                         </li>
                         <li className="nav-item dropdown language-dropdown">
                             <a href="javascript:void(0);" className="nav-link dropdown-toggle" id="language-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="assets/img/ca.png" className="flag-width" alt="flag" />
+                                <img src="/assets/img/ca.png" className="flag-width" alt="flag" />
                             </a>
                             <div className="dropdown-menu position-absolute" aria-labelledby="language-dropdown">
-                                <a className="dropdown-item d-flex" href="javascript:void(0);"><img src="assets/img/de.png" className="flag-width" alt="flag" /> <span className="align-self-center">&nbsp;German</span></a>
-                                <a className="dropdown-item d-flex" href="javascript:void(0);"><img src="assets/img/jp.png" className="flag-width" alt="flag" /> <span className="align-self-center">&nbsp;Japanese</span></a>
-                                <a className="dropdown-item d-flex" href="javascript:void(0);"><img src="assets/img/fr.png" className="flag-width" alt="flag" /> <span className="align-self-center">&nbsp;French</span></a>
-                                <a className="dropdown-item d-flex" href="javascript:void(0);"><img src="assets/img/ca.png" className="flag-width" alt="flag" /> <span className="align-self-center">&nbsp;English</span></a>
+                                <a className="dropdown-item d-flex" href="javascript:void(0);"><img src="/assets/img/de.png" className="flag-width" alt="flag" /> <span className="align-self-center">&nbsp;German</span></a>
+                                <a className="dropdown-item d-flex" href="javascript:void(0);"><img src="/assets/img/jp.png" className="flag-width" alt="flag" /> <span className="align-self-center">&nbsp;Japanese</span></a>
+                                <a className="dropdown-item d-flex" href="javascript:void(0);"><img src="/assets/img/fr.png" className="flag-width" alt="flag" /> <span className="align-self-center">&nbsp;French</span></a>
+                                <a className="dropdown-item d-flex" href="javascript:void(0);"><img src="/assets/img/ca.png" className="flag-width" alt="flag" /> <span className="align-self-center">&nbsp;English</span></a>
                             </div>
                         </li>
                         <li className="nav-item dropdown message-dropdown">
@@ -89,7 +89,7 @@ const Navbar = () => {
                                         <div className="">
                                             <div className="media">
                                                 <div className="user-img">
-                                                    <img src="assets/img/90x90.jpg" className="img-fluid mr-2" alt="avatar" />
+                                                    <img src="/assets/img/90x90.jpg" className="img-fluid mr-2" alt="avatar" />
                                                 </div>
                                                 <div className="media-body">
                                                     <div className="">
@@ -178,7 +178,7 @@ const Navbar = () => {
                             <div className="dropdown-menu position-absolute" aria-labelledby="userProfileDropdown">
                                 <div className="user-profile-section">
                                     <div className="media mx-auto">
-                                        <img src="assets/img/90x90.jpg" className="img-fluid mr-2" alt="avatar" />
+                                        <img src="/assets/img/90x90.jpg" className="img-fluid mr-2" alt="avatar" />
                                         <div className="media-body">
                                             <h5>{user?.name || 'No Name'}</h5>
                                             <p>{user?.job || 'No Job Title'}</p>

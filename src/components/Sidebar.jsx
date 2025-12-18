@@ -184,7 +184,7 @@ const Sidebar = () => {
                 <ul className="navbar-nav theme-brand flex-row text-center">
                     <li className="nav-item theme-logo">
                         <Link to="/">
-                            <img src="assets/img/logop.jpg" className="navbar-logo" alt="logo" />
+                            <img src="/assets/img/logop.jpg" className="navbar-logo" alt="logo" />
                         </Link>
                     </li>
                     <li className="nav-item theme-text">
@@ -286,14 +286,14 @@ const Sidebar = () => {
                                 </div>
                             </Link>
                         </li>
-                        <li className={`menu ${isMenuActive('/scrmBrd') ? 'active' : ''}`}>
+                        {/* <li className={`menu ${isMenuActive('/scrmBrd') ? 'active' : ''}`}>
                             <Link to="/scrmBrd" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-file-plus"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1={12} y1={18} x2={12} y2={12} /><line x1={9} y1={15} x2={15} y2={15} /></svg>
                                     <span>Scrumboard</span>
                                 </div>
                             </Link>
-                        </li>
+                        </li> */}
                         <li className={`menu ${isMenuActive('/cnts') ? 'active' : ''}`}>
                             <Link to="/cnts" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
@@ -347,13 +347,19 @@ const Sidebar = () => {
                             </a>
                             <ul className={`collapse submenu list-unstyled ${expandedMenus.memories ? 'show' : ''}`} id="memories">
                                 <li>
-                                    <Link to="/memories/new" onClick={handleSubmenuLinkClick}> New Record </Link>
+                                    <Link to="/memris" onClick={handleSubmenuLinkClick}> New Record </Link>
                                 </li>
                                 <li>
-                                    <Link to="/memories/birthdays" onClick={handleSubmenuLinkClick}> Birthdays </Link>
+                                    <Link to="/memrisBday" onClick={handleSubmenuLinkClick}> Birthdays </Link>
                                 </li>
                                 <li>
-                                    <Link to="/memories/anniversaries" onClick={handleSubmenuLinkClick}> Anniversaries </Link>
+                                    <Link to="/memrisWedng" onClick={handleSubmenuLinkClick}> Wedding </Link>
+                                </li>
+                                <li>
+                                    <Link to="/memrisDth" onClick={handleSubmenuLinkClick}>Death Anniversary </Link>
+                                </li>
+                                <li>
+                                    <Link to="/memrisOthr" onClick={handleSubmenuLinkClick}> Others </Link>
                                 </li>
                             </ul>
                         </li>
@@ -362,43 +368,53 @@ const Sidebar = () => {
                         <li className="menu menu-heading">
                             <div className="heading"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-more-horizontal"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg><span>MUTUAL FUNDS</span></div>
                         </li>
-                        <li className={`menu ${isMenuActive('/listTable') ? 'active' : ''}`}>
+                        {/* <li className={`menu ${isMenuActive('/listTable') ? 'active' : ''}`}>
                             <Link to="/listTale" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-target"><circle cx={12} cy={12} r={10} /><circle cx={12} cy={12} r={6} /><circle cx={12} cy={12} r={2} /></svg>
                                     <span>New Mutual Funds</span>
                                 </div>
                             </Link>
-                        </li>
-                        <li className={`menu ${isMenuActive('/contactTest') ? 'active' : ''}`}>
-                            <Link to="/contatTest" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        </li> */}
+                        <li className={`menu ${isMenuActive('/mutlFnd') ? 'active' : ''}`}>
+                            <Link to="/mutlFnd" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></svg>
                                     <span>All Mutual Funds</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className={`menu ${isMenuActive('/contactTest1') ? 'active' : ''}`}>
-                            <Link to="/contacTest1" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/mutualFund/follow') ? 'active' : ''}`}>
+                            <Link to="/mutualFund/follow" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-repeat"><polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" /><polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" /></svg>
                                     <span>Follow ups</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/contactest2" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/mutualFund/snoozed') ? 'active' : ''}`}>
+                            <Link to="/mutualFund/snoozed" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-clock"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                                     <span>Snoozed</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/wishlist" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/mutualFund/wishlist') ? 'active' : ''}`}>
+                            <Link to="/mutualFund/wishlist" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-star"><polygon points="12 2 15 10 23 10 17 14 19 22 12 17 5 22 7 14 1 10 9 10 12 2" /></svg>
                                     <span>Wish List</span>
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`menu ${isMenuActive('/mutualFund/other') ? 'active' : ''}`}>
+                            <Link to="/mutualFund/other" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                                <div className="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-folder">
+                                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6l2 3h8a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    <span>Others</span>
                                 </div>
                             </Link>
                         </li>
@@ -417,46 +433,57 @@ const Sidebar = () => {
                         <li className="menu menu-heading">
                             <div className="heading"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-more-horizontal"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg><span>SHARES</span></div>
                         </li>
-                        <li className={`menu ${isMenuActive('/listTable') ? 'active' : ''}`}>
+                        {/* <li className={`menu ${isMenuActive('/listTable') ? 'active' : ''}`}>
                             <Link to="/listTabl" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-target"><circle cx={12} cy={12} r={10} /><circle cx={12} cy={12} r={6} /><circle cx={12} cy={12} r={2} /></svg>
                                     <span>New Shares</span>
                                 </div>
                             </Link>
-                        </li>
-                        <li className={`menu ${isMenuActive('/contactTest') ? 'active' : ''}`}>
-                            <Link to="/contactTet" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        </li> */}
+                        <li className={`menu ${isMenuActive('/shrs') ? 'active' : ''}`}>
+                            <Link to="/shrs" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></svg>
                                     <span>All Shares</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className={`menu ${isMenuActive('/contactTest1') ? 'active' : ''}`}>
-                            <Link to="/contactTes1" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/shrsFlw') ? 'active' : ''}`}>
+                            <Link to="/shrsFlw" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-repeat"><polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" /><polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" /></svg>
                                     <span>Follow ups</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/contactTet2" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/shrsSnzd') ? 'active' : ''}`}>
+                            <Link to="/shrsSnzd" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-clock"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                                     <span>Snoozed</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/wishlist" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/shtsWshlst') ? 'active' : ''}`}>
+                            <Link to="/shtsWshlst" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-star"><polygon points="12 2 15 10 23 10 17 14 19 22 12 17 5 22 7 14 1 10 9 10 12 2" /></svg>
                                     <span>Wish List</span>
                                 </div>
                             </Link>
                         </li>
+                        <li className={`menu ${isMenuActive('/shrsOthr') ? 'active' : ''}`}>
+                            <Link to="/shrsOthr" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                                <div className="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-folder">
+                                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6l2 3h8a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    <span>Others</span>
+                                </div>
+                            </Link>
+                        </li>
+
                         </>)}
                     
 
@@ -555,8 +582,8 @@ const Sidebar = () => {
                                 </div>
                             </Link>
                         </li>
-                        <li className={`menu ${isMenuActive('/misVis') ? 'active' : ''}`}>
-                            <Link to="/misVis" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/mission') ? 'active' : ''}`}>
+                            <Link to="/mission" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-target"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>
 
@@ -564,8 +591,8 @@ const Sidebar = () => {
                                 </div>
                             </Link>
                         </li>
-                        <li className={`menu ${isMenuActive('/misVis') ? 'active' : ''}`}>
-                            <Link to="/misVis" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/vission') ? 'active' : ''}`}>
+                            <Link to="/vission" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-eye"><path d="M1 12C3.73 5.52 8.5 2 12 2s8.27 3.52 11 10c-2.73 6.48-7.5 10-11 10s-8.27-3.52-11-10z" /><circle cx="12" cy="12" r="3" /></svg>
 
@@ -593,7 +620,7 @@ const Sidebar = () => {
                                 </div>
                             </Link>
                         </li> */}
-                        <li className="menu">
+                        <li className={`menu ${isMenuActive('/budget/yearly') ? 'active' : ''}`}>
                             <Link to="/budget/yearly" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-calendar"> <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
@@ -601,15 +628,23 @@ const Sidebar = () => {
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/budget/halfyearly" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/budget/halfYearly') ? 'active' : ''}`}>
+                            <Link to="/budget/halfYearly" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-calendar"> <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
                                     <span>Half Yearly</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className={`menu ${expandedMenus.authentication ? 'active' : ''}`}>
+                        <li className={`menu ${isMenuActive('/budgetQtr') ? 'active' : ''}`}>
+                            <Link to="/budgetQtr" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                                <div className="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-calendar"> <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+                                    <span>Quarterly</span>
+                                </div>
+                            </Link>
+                        </li>
+                        {/* <li className={`menu ${expandedMenus.authentication ? 'active' : ''}`}>
                             <a 
                                 href="#authentication" 
                                 className="dropdown-toggle"
@@ -659,17 +694,17 @@ const Sidebar = () => {
                                     <Link to="/budget/q4" onClick={handleSubmenuLinkClick}> 4th Quarter </Link>
                                 </li>
                             </ul>
-                        </li>
-                        <li className="menu">
-                            <Link to="/milestones" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        </li> */}
+                        <li className={`menu ${isMenuActive('/budget/mileStones') ? 'active' : ''}`}>
+                            <Link to="/budget/mileStones" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-flag"><path d="M4 2v20" /><path d="M4 2h16l-4 6 4 6H4" /></svg>
                                     <span>Mile Stones</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/targets" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/budget/targets') ? 'active' : ''}`}>
+                            <Link to="/budget/targets" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-crosshair"><circle cx="12" cy="12" r="10" /><line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /></svg>
                                     <span>Targets</span>
@@ -688,56 +723,56 @@ const Sidebar = () => {
                                 </div>
                             </Link>
                         </li> */}
-                        <li className="menu">
-                            <Link to="/rainyday" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/fund/rainy') ? 'active' : ''}`}>
+                            <Link to="/fund/rainy" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-umbrella"><path d="M23 12a11.05 11.05 0 0 0-22 0Z" /><path d="M12 12v8" /><path d="M12 20a4 4 0 0 0 8 0" /></svg>
                                     <span>Rainy Day Funds</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/emergency" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/fund/emergency') ? 'active' : ''}`}>
+                            <Link to="/fund/emergency" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
                                     <span>Emergency Funds</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/shortterm" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/fund/shortterm') ? 'active' : ''}`}>
+                            <Link to="/fund/shortterm" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-trending-down"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6" /><polyline points="17 18 23 18 23 12" /></svg>
                                     <span>Short Term Needs</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/longterm" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/fund/longterm') ? 'active' : ''}`}>
+                            <Link to="/fund/longterm" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-trending-up"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
                                     <span>Long Term Needs</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/liabilities" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/fund/liabilities') ? 'active' : ''}`}>
+                            <Link to="/fund/liabilities" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>
                                     <span> Credits & Liabilities</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/firdatinvestment" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/fund/friday') ? 'active' : ''}`}>
+                            <Link to="/fund/friday" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-dollar-sign"><polyline points="5 9 2 12 5 15" /><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg>
                                     <span>Friday Investment</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/otherfunds" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/fund/others') ? 'active' : ''}`}>
+                            <Link to="/fund/others" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-box"><path d="M21 16V8a2 2 0 0 0-1-1.73l-8-4.62a2 2 0 0 0-2 0l-8 4.62A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l8 4.62a2 2 0 0 0 2 0l8-4.62a2 2 0 0 0 1-1.73z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /></svg>
                                     <span>Others</span>
@@ -748,88 +783,88 @@ const Sidebar = () => {
                         <li className="menu menu-heading">
                             <div className="heading"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-more-horizontal"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg><span>FINANCIAL OUTLOOKS</span></div>
                         </li>
-                        <li className="menu">
-                            <Link to="/compounding" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/compounding') ? 'active' : ''}`}>
+                            <Link to="/financialOL/compounding" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
                                     <span>Compounding Magic</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/scoreboard" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/scoreboard') ? 'active' : ''}`}>
+                            <Link to="/financialOL/scoreboard" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-award"><circle cx="12" cy="8" r="7" /><path d="M8 21v-4l4-4 4 4v4l-4 4z" /></svg>
                                     <span>Score Board</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/mindedideas" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/mindedideas') ? 'active' : ''}`}>
+                            <Link to="/financialOL/mindedideas" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></svg>
                                     <span>Minded Ideas</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/insights" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/insights') ? 'active' : ''}`}>
+                            <Link to="/financialOL/insights" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-bar-chart-2"><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></svg>
                                     <span>Insights</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/bigbites" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/bigbites') ? 'active' : ''}`}>
+                            <Link to="/financialOL/bigbites" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-box"><path d="M21 16V8a2 2 0 0 0-1-1.73L13 2.27a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z" /></svg>
                                     <span>Big Bites</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/myvision" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/myfinvision') ? 'active' : ''}`}>
+                            <Link to="/financialOL/myfinvision" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-eye"><path d="M1 12C3.73 5.52 8.5 2 12 2s8.27 3.52 11 10c-2.73 6.48-7.5 10-11 10s-8.27-3.52-11-10z" /><circle cx="12" cy="12" r="3" /></svg>
                                     <span>My Financial Vision</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/mymission" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/myfinmission') ? 'active' : ''}`}>
+                            <Link to="/financialOL/myfinmission" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-target"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>
                                     <span>My Financial Mission</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/annualcosts" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/annualcosts') ? 'active' : ''}`}>
+                            <Link to="/financialOL/annualcosts" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-calendar"><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
                                     <span>Annual Costs / 12</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/mindsets" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/mindsets') ? 'active' : ''}`}>
+                            <Link to="/financialOL/mindsets" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></svg>
                                     <span>Mind Sets</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/dreams" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/dreams') ? 'active' : ''}`}>
+                            <Link to="/financialOL/dreams" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-cloud"><path d="M20 16.58A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 4 16.25" /></svg>
                                     <span>Dreams</span>
                                 </div>
                             </Link>
                         </li>
-                        <li className="menu">
-                            <Link to="/advices" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                        <li className={`menu ${isMenuActive('/financialOL/advices') ? 'active' : ''}`}>
+                            <Link to="/financialOL/advices" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
                                 <div className="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-circle"><path d="M21 11.5a8.38 8.38 0 0 1-1.23 4.28A8.5 8.5 0 1 1 4.21 4.21 8.38 8.38 0 0 1 8.5 3" /></svg>
                                     <span>Advices</span>
@@ -838,17 +873,62 @@ const Sidebar = () => {
                         </li>
 
                         <li className="menu menu-heading">
-    <div className="heading">
-        <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-more-horizontal">
-            <circle cx={12} cy={12} r={1} />
-            <circle cx={19} cy={12} r={1} />
-            <circle cx={5} cy={12} r={1} />
-        </svg>
-        <span>PLANS</span>
-    </div>
-</li>
+                            <div className="heading">
+                                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-more-horizontal">
+                                    <circle cx={12} cy={12} r={1} />
+                                    <circle cx={19} cy={12} r={1} />
+                                    <circle cx={5} cy={12} r={1} />
+                                </svg>
+                                <span>PLANS</span>
+                            </div>
+                        </li>
 
-<li className={`menu ${expandedMenus.futureMenu ? 'active' : ''}`}>
+                        <li className={`menu ${isMenuActive('/plan/future') ? 'active' : ''}`}>
+                            <Link to="/plan/future" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                                <div className="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-clock">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <polyline points="12 6 12 12 16 14" />
+                                    </svg>                                    
+                                    <span>Future</span>
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`menu ${isMenuActive('/plan/yearly') ? 'active' : ''}`}>
+                            <Link to="/plan/yearly" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                                <div className="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-calendar">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                    </svg>                                    
+                                    <span>Yearly</span>
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`menu ${isMenuActive('/planQtr') ? 'active' : ''}`}>
+                            <Link to="/planQtr" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                                <div className="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-pie-chart">
+                                        <path d="M21.21 15.89A10 10 0 1 1 12 2v10z" />
+                                    </svg>                                    
+                                    <span>Quarterly</span>
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`menu ${isMenuActive('/plan/other') ? 'active' : ''}`}>
+                            <Link to="/plan/other" aria-expanded="false" className="dropdown-toggle" onClick={handleLinkClick}>
+                                <div className="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-folder">
+                                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6l2 3h8a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    <span>Other</span>
+                                </div>
+                            </Link>
+                        </li>
+
+{/* <li className={`menu ${expandedMenus.futureMenu ? 'active' : ''}`}>
     <a 
         href="#futureMenu" 
         className="dropdown-toggle"
@@ -992,6 +1072,51 @@ const Sidebar = () => {
         </li>
     </ul>
 </li>
+<li className={`menu ${expandedMenus.quarterlyMenu ? 'active' : ''}`}>
+    <a 
+        href="#quarterlyMenu" 
+        className="dropdown-toggle"
+        onClick={(e) => handleMenuClick('quarterlyMenu', e)}
+    >
+        <div className="">
+            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-pie-chart">
+                <path d="M21.21 15.89A10 10 0 1 1 12 2v10z" />
+            </svg>
+            <span>Other</span>
+        </div>
+        <div>
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width={24} 
+                height={24} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth={2} 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="feather feather-chevron-right"
+                style={{ 
+                    transform: expandedMenus.quarterlyMenu ? 'rotate(90deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s ease'
+                }}
+            >
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+        </div>
+    </a>
+    <ul className={`collapse submenu list-unstyled ${expandedMenus.quarterlyMenu ? 'show' : ''}`} id="quarterlyMenu">
+        <li>
+            <Link to="/plans/quarterly/new" onClick={handleSubmenuLinkClick}> Add New </Link>
+        </li>
+        <li>
+            <Link to="/plans/quarterly/list" onClick={handleSubmenuLinkClick}> List Records </Link>
+        </li>
+        <li>
+            <Link to="/plans/quarterly/others" onClick={handleSubmenuLinkClick}> Others </Link>
+        </li>
+    </ul>
+</li> */}
                     </>)}
 
                     

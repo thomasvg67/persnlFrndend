@@ -16,52 +16,52 @@ import { AuthContext } from "../contexts/AuthContext";
 import Loader from "../components/Loader";
 
 
-const AppsDTContact = () => {
+const MemoriesOther = () => {
   const { token, user } = useContext(AuthContext);
   const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [feedbackCache, setFeedbackCache] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
     name: '',
     email: '',
     ph: '',
     address: '',
-    occup: '',
     dob: '',
-    wedDay: '',
-    hint: '',
     type: '',
-    gmap: '',
     message: '',
-    audioFiles: [],
-    newAudio: null
+    // status: true
   });
+
+
   const [errors, setErrors] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [feedbacks, setFeedbacks] = useState([]);
   const [assignableUsers, setAssignableUsers] = useState([]);
 
   const handleChange = (e) => {
-    const { id, value } = e.target;
+    const { id, value, type, checked, name } = e.target;
+
+    // Action Type checkboxes
+    if (type === 'radio') {
+      setForm(prev => ({ ...prev, [name]: value }));
+      return;
+    }
+
+    // Status checkbox
+    if (type === 'checkbox') {
+      setForm(prev => ({ ...prev, [id]: checked }));
+      return;
+    }
+
     setForm(prev => ({
       ...prev,
       [id.replace('c-', '')]: value
     }));
-
-    // Clear error when user starts typing
-    if (errors[id.replace('c-', '')]) {
-      setErrors(prev => ({ ...prev, [id.replace('c-', '')]: false }));
-    }
   };
 
-  const handleAudioChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setForm(prev => ({ ...prev, newAudio: file }));
-    }
-  };
+
+
 
   const handleGetLocation = () => {
     if (navigator.geolocation) {
@@ -97,68 +97,39 @@ const AppsDTContact = () => {
     }
   };
 
-  const fetchContactForEdit = async (id) => {
+  const fetchMemoryForEdit = async (id) => {
     try {
-      const response = await fetch(`${VITE_BASE_URL}/api/contacts/${id}`, {
+      const response = await fetch(`${VITE_BASE_URL}/api/memories/${id}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       });
 
-      if (response.ok) {
-        // console.log("API returned error status:", response.status);
-        const data = await response.json();
-        const contact = data.contact;
-
-        // Format date for datetime-local input
-        const dob = contact.dob
-          ? new Date(contact.dob).toISOString().slice(0, 10)
-          : '';
-
-        const wedDay = contact.wedDay
-          ? new Date(contact.wedDay).toISOString().slice(0, 10)
-          : '';
-        // console.log("Form being set:", {
-        //   name: contact.name,
-        //   ph: contact.ph,
-        //   audio: contact.audio
-        // });
-
-        setForm({
-          name: contact?.name || '',
-          email: contact?.email || '',
-          ph: contact?.ph || '',
-          address: contact?.address || '',
-          occup: contact?.occup || '',
-          dob: dob,
-          wedDay: wedDay,
-          hint: contact?.hint || '',
-          type: contact?.type || '',
-          gmap: contact?.gmap || '',
-          message: '',
-          audioFiles: contact?.audio || [],
-          newAudio: null
-        });
-
-
-        // Fetch feedbacks for this contact
-        await fetchMessages(id);
-
-        // Return true to indicate success
-        return true;
-      }
+      if (!response.ok) return false;
 
       const data = await response.json();
+      const memory = data.memory;
 
-      if (!data.contact) {
-        console.log("No contact returned");
-        return;
-      }
+      setForm({
+        name: memory.name || '',
+        email: memory.email || '',
+        ph: memory.ph || '',
+        address: memory.address || '',
+        dob: memory.dob
+          ? new Date(memory.dob).toISOString().slice(0, 10)
+          : '',
+        type: memory.type || '',
+        message: memory.message || '',
+        // status: memory.status ?? true
+      });
+
+      return true;
     } catch (err) {
-      console.error('Error fetching contact:', err);
+      console.error('Error fetching share:', err);
       return false;
     }
   };
+
 
   // Update the edit button handler
   // $(document).on("click", ".edit-contact", function (e) {
@@ -178,111 +149,59 @@ const AppsDTContact = () => {
   //   });
   // });
 
-  const fetchMessages = async (contactId) => {
-    try {
-      const response = await fetch(`${VITE_BASE_URL}/api/messages/${contactId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        const messages = await response.json();
-        setFeedbacks(messages);
-      }
-    } catch (err) {
-      console.error('Error fetching messages:', err);
-    }
-  };
-
   const resetForm = () => {
     setForm({
       name: '',
       email: '',
       ph: '',
       address: '',
-      occup: '',
       dob: '',
-      wedDay: '',
-      hint: '',
       type: '',
-      gmap: '',
-      message: '',
-      audioFiles: [],
-      newAudio: null
+      message: ''
     });
     setErrors({});
     setEditingId(null);
-    setFeedbacks([]);
   };
 
+
+
   const handleSave = async () => {
-    // Validate form
     const newErrors = {};
     if (!form.name.trim()) newErrors.name = true;
-    if (!form.ph.trim()) newErrors.ph = true;
 
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors).length) {
       setErrors(newErrors);
       return;
     }
 
     try {
-      const formData = new FormData();
-
-      // Append all form fields
-      Object.keys(form).forEach(key => {
-        if (key !== 'newAudio' && key !== 'audioFiles') {
-          formData.append(key, form[key] || '');
-        }
-      });
-
-      // Append audio file if exists
-      if (form.newAudio) {
-        formData.append('audioFile', form.newAudio);
-      }
-
       const url = editingId
-        ? `${VITE_BASE_URL}/api/contacts/edit/${editingId}`
-        : `${VITE_BASE_URL}/api/contacts/add`;
+        ? `${VITE_BASE_URL}/api/memories/edit/${editingId}`
+        : `${VITE_BASE_URL}/api/memories/add`;
 
       const method = editingId ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
-        body: formData
+        body: JSON.stringify(form)
       });
 
-      if (response.ok) {
-        // Close modal and reload data
-        // $('#addContactModal').modal('hide');
-        setShowModal(false);
-        resetForm();
-
-        // Reload DataTable
-        const table = $('#style-1').DataTable();
-        table.ajax.reload();
-
-        // Show success message
-        // Swal.fire({
-        //   icon: 'success',
-        //   title: 'Success!',
-        //   text: editingId ? 'Contact updated successfully!' : 'Contact added successfully!',
-        //   showConfirmButton: false,
-        //   timer: 1500
-        // });
-      } else {
-        throw new Error('Failed to save contact');
+      if (!response.ok) {
+        const err = await response.text();
+        console.error('Backend error:', err);
+        throw new Error(err);
       }
+
+      setShowModal(false);
+      resetForm();
+      $('#style-1').DataTable().ajax.reload();
+
     } catch (err) {
-      console.error('Error saving contact:', err);
-      // Swal.fire({
-      //   icon: 'error',
-      //   title: 'Error',
-      //   text: 'Failed to save contact. Please try again.',
-      // });
+      console.error('Error saving share:', err);
     }
   };
 
@@ -314,14 +233,13 @@ const AppsDTContact = () => {
   }, [showModal]);
 
   const initializeTooltips = () => {
-    const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    tooltipElements.forEach(el => {
-      // Check if tooltip is already initialized
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
       if (!el.getAttribute('data-bs-original-title')) {
         new bootstrap.Tooltip(el);
       }
     });
   };
+
 
   const hasLoaded = useRef(false);
   function loadScript(src, options = {}) {
@@ -339,36 +257,6 @@ const AppsDTContact = () => {
       document.body.appendChild(script);
     });
   }
-
-  const fetchMessageForContact = async (contactId) => {
-    if (feedbackCache[contactId]) {
-      return feedbackCache[contactId];
-    }
-
-    try {
-      const response = await fetch(
-        `${VITE_BASE_URL}/api/messages/${contactId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      if (!response.ok) return null;
-
-      const messages = await response.json();
-
-      const latestMessage = messages.length ? messages[0].message : null;
-
-      setFeedbackCache(prev => ({
-        ...prev,
-        [contactId]: latestMessage
-      }));
-
-      return latestMessage;
-    } catch (err) {
-      console.error(err);
-      return null;
-    }
-  };
-
 
   let selectedRowIds = new Set();
 
@@ -391,30 +279,30 @@ const AppsDTContact = () => {
           1: 'name',
           2: 'email',
           3: 'ph',
-          4: 'address',
-          5: null,
-          6: null,
-          7: 'dob',
-          8: 'crtdOn'
+          4: 'type',
+          5: 'dob',
+          6: 'crtdOn'
         };
 
+        const defaultTypeFilter = 'Other';
+        $('#medicine-filter').val(defaultTypeFilter);
 
         const c1 = $('#style-1').DataTable({
           processing: false,
           serverSide: true,
-          order: [[8, 'desc']],
+          order: [[6, 'desc']],
           columnDefs: [
-            { orderable: false, targets: [0, 5, 6] }
+            { orderable: false, targets: [0, 6, 7] }
           ],
           pagingType: "simple_numbers",
 
           ajax: {
-            url: `${VITE_BASE_URL}/api/contacts`,
+            url: `${VITE_BASE_URL}/api/memories`,
             type: 'GET',
             data: function (d) {
               const columnIndex = d.order?.[0]?.column;
               const sortBy = columnMap[columnIndex] || 'crtdOn';
-              const filterValue = $('#medicine-filter').val();
+              const filterValue = $('#medicine-filter').val() || defaultTypeFilter;
               return {
                 draw: d.draw,
                 page: Math.floor(d.start / d.length) + 1,
@@ -428,25 +316,26 @@ const AppsDTContact = () => {
             beforeSend: function (xhr) {
               xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             },
-            drawCallback: function (settings) {
+            drawCallback: function () {
               // Reinitialize tooltips after each table draw
               setTimeout(() => {
                 initializeTooltips();
               }, 100);
             },
             dataSrc: function (json) {
-              // Return data immediately, we'll fetch feedbacks async
-              return json.data.map((contact, index) => ({
+              return json.data.map((memory, index) => ({
                 record: index + 1,
-                name: contact.name,
-                email: contact.email,
-                ph: contact.ph,
-                address: contact.address,
-                audio: contact.audio || [], // Make sure audio is included
-                message: 'Loading...', // Placeholder
-                dob: contact.dob ? new Date(contact.dob).toLocaleDateString() : 'No DOB',
-                id: contact._id,
-                gmap: contact.gmap
+                name: memory.name,
+                email: memory.email,
+                ph: memory.ph,
+                type: memory.type,
+                dob: memory.dob
+                  ? new Date(memory.dob).toLocaleDateString()
+                  : '-',
+                description: memory.message
+                  ? memory.message.replace(/<[^>]*>?/gm, '')
+                  : '',
+                id: memory._id
               }));
             }
 
@@ -468,95 +357,12 @@ const AppsDTContact = () => {
                 `;
               }
             },
-            {
-              data: 'name',
-              render: function (data, type, row) {
-                const initials = data ? data.charAt(0).toUpperCase() : 'C';
-                const colors = ['primary', 'success', 'danger', 'warning', 'info'];
-                const colorIndex = row.id ? row.id.charCodeAt(row.id.length - 1) % colors.length : 0;
-                return `<div class="d-flex align-items-center">
-                  <div class="avatar avatar-${colors[colorIndex]} me-3">
-                  </div>
-                  <div>
-                    <h6 class="mb-0">${data || 'No Name'}</h6>
-                  </div>
-                </div>`;
-              }
-            },
+            { data: 'name' },
             { data: 'email' },
             { data: 'ph' },
-            // { data: 'location' },
-            {
-              data: 'address',
-              render: function (data, type, row) {
-                if (data && row.gmap) {
-                  // Both loc and gmap present
-                  return `<a href="https://www.google.com/maps?q=${encodeURIComponent(row.gmap)}" 
-                             target="_blank" rel="noopener noreferrer"
-                             style="color:#4361ee;text-decoration:underline;">
-                            ${data}
-                          </a>`;
-                } else if (data) {
-                  // Only loc text available
-                  return data;
-                } else if (row.gmap) {
-                  // Only gmap coordinates available
-                  return `<a href="https://www.google.com/maps?q=${encodeURIComponent(row.gmap)}" 
-                             target="_blank" rel="noopener noreferrer"
-                             style="color:#4361ee;text-decoration:underline;">
-                            Location
-                          </a>`;
-                } else {
-                  return '-';
-                }
-              }
-            },
-            {
-              data: 'audio',
-              className: 'text-center',
-              render: function (data, type, row) {
-                // console.log('Audio data for row:', row.id, data);
-
-                if (data && Array.isArray(data) && data.length > 0 && data[0].file) {
-                  const latestAudio = data[data.length - 1];
-                  // const audioUrl = `${VITE_BASE_URL}/uploads/${latestAudio.file}`;
-                  const audioUrl = `${VITE_BASE_URL}/uploads/audio/${latestAudio.file}`;
-                  const audioId = `audio-${row.id.replace(/[^a-zA-Z0-9]/g, '')}`;
-                  return `
-                    <div class="audio-player-container" style="max-width: 150px; margin: 0 auto;">
-                      <audio id="${audioId}" controls style="width: 100%; height: 35px;">
-                        <source src="${audioUrl}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                      </audio>
-                    </div>
-                  `;
-                }
-                return `<span class="text-muted">No Audio</span>`;
-              }
-            },
-            {
-              data: 'message',
-              render: function (data, type, row) {
-                // Format message text (max 15 chars with ellipsis)
-                let displayText = 'No Message';
-                if (data && data !== 'Loading...') {
-                  if (data.length > 15) {
-                    displayText = data.substring(0, 15) + '...';
-                  } else {
-                    displayText = data;
-                  }
-                } else if (data === 'Loading...') {
-                  displayText = '<span class="text-muted">Loading...</span>';
-                }
-                return `<div title="${data && data !== 'Loading...' ? data : ''}">${displayText}</div>`;
-              }
-            },
-            {
-              data: 'dob',
-              render: function (data) {
-                return data;
-              }
-            },
+            { data: 'type' },
+            { data: 'dob' },
+            { data: 'description' },
             {
               data: 'id',
               className: 'text-center',
@@ -629,7 +435,7 @@ const AppsDTContact = () => {
                 }
 
                 for (const id of selectedRowIds) {
-                  await fetch(`${VITE_BASE_URL}/api/contacts/delete/${id}`, {
+                  await fetch(`${VITE_BASE_URL}/api/memories/delete/${id}`, {
                     method: "DELETE",
                     headers: { Authorization: `Bearer ${token}` }
                   });
@@ -653,87 +459,58 @@ const AppsDTContact = () => {
           stripeClasses: [],
           lengthMenu: [10, 20, 50],
           pageLength: 10,
-          createdRow: function (row, data, dataIndex) {
-            // Fetch feedback for this row after it's created
-            if (data.id) {
-              fetchMessageForContact(data.id).then(message => {
-                if (message) {
-                  // Update the cell with the feedback
-                  const api = c1;
-                  const rowNode = api.row(row).node();
-                  if (rowNode) {
-                    const messageCell = rowNode.cells[6]; // 7th column for feedback (0-indexed)
-                    if (messageCell) {
-                      let displayText = 'No Message';
-                      if (message.length > 15) {
-                        displayText = message.substring(0, 15) + '...';
-                      } else {
-                        displayText = message;
-                      }
+          createdRow: function (row, data) {
+            const description = data.description;
+            if (!description) return;
 
-                      // Create span with tooltip attributes
-                      function stripHtml(html) {
-                        const tmp = document.createElement("div");
-                        tmp.innerHTML = html;
-                        return tmp.textContent || tmp.innerText || "";
-                      }
+            const cellIndex = 6; // adjust if needed
+            const descCell = row.cells[cellIndex];
+            if (!descCell) return;
 
-                      const cleanMessage = stripHtml(message);
+            const maxLength = 40;
+            const displayText =
+              description.length > maxLength
+                ? description.substring(0, maxLength) + '...'
+                : description;
 
-                      messageCell.innerHTML = `
-                        <span 
-                          class="inv-feedback bs-tooltip"
-                          data-bs-toggle="tooltip" 
-                          data-bs-html="false"
-                          title="${cleanMessage.replace(/"/g, '&quot;')}"
-                          style="cursor: pointer"
-                        >
-                          ${displayText}
-                        </span>
-                        `;
+            const safeText = description.replace(/"/g, '&quot;');
 
+            descCell.innerHTML = `
+    <span
+      class="inv-feedback bs-tooltip"
+      data-bs-toggle="tooltip"
+      data-bs-html="false"
+      title="${safeText}"
+      style="cursor: pointer"
+    >
+      ${displayText}
+    </span>
+  `;
 
-                      // Initialize tooltip for this specific element
-                      if (window.bootstrap && window.bootstrap.Tooltip) {
-                        new window.bootstrap.Tooltip(messageCell.querySelector('[data-bs-toggle="tooltip"]'));
-                      }
-                    }
-                  }
-                } else {
-                  // Update to show "No Feedback" if null
-                  const api = c1;
-                  const rowNode = api.row(row).node();
-                  if (rowNode) {
-                    const messageCell = rowNode.cells[6];
-                    if (messageCell) {
-                      messageCell.innerHTML = `<div>No Message</div>`;
-                    }
-                  }
-                }
-              });
+            // 🔥 THIS IS THE IMPORTANT PART
+            if (window.bootstrap && window.bootstrap.Tooltip) {
+              new window.bootstrap.Tooltip(
+                descCell.querySelector('[data-bs-toggle="tooltip"]')
+              );
             }
           }
+
         });
 
         // Insert dropdown before search box
-        $('.dataTables_filter').prepend(`
-          <select
-            id="medicine-filter"
-            class="form-control mr-2"
-            style="width:150px; display:inline-block;"
-          >
-            <option value="">All</option>
-            <option value="Relatives">Relatives</option>
-            <option value="Friends">Friends</option>
-            <option value="Close Friends">Close Friends</option>
-            <option value="Close Relatives">Close Relatives</option>
-            <option value="Business">Business</option>
-            <option value="Mentors">Mentors</option>
-            <option value="Inspirators">Inspirators</option>
-            <option value="Others">Others</option>
-
-          </select>
-        `);
+        // $('.dataTables_filter').prepend(`
+        //   <select
+        //     id="medicine-filter"
+        //     class="form-control mr-2"
+        //     style="width:150px; display:inline-block;"
+        //   >
+        //     <option value="">All</option>
+        //     <option value="Birthday">Birthday</option>
+        //     <option value="Wedding">Wedding</option>
+        //     <option value="Death Aniversary">Death Aniversary</option>
+        //     <option value="Other">Other</option>
+        //   </select>
+        // `);
 
         // Add change event for the filter dropdown
         $(document).on('change', '#medicine-filter', function () {
@@ -755,25 +532,16 @@ const AppsDTContact = () => {
           navigate('/vwCntct', { state: { contactId } });
         });
 
-        // $('#style-1').on('click', '.edit-contact', function (e) {
-        //   e.preventDefault();
-        //   const contactId = $(this).data('id');
-        //   setEditingId(contactId);
-        //   fetchContactForEdit(contactId);
-        //   setShowModal(true);
-        // });
-
         $(document).on("click", ".edit-contact", function (e) {
           e.preventDefault();
-          const contactId = $(this).data("id");
-          setEditingId(contactId);
+          const id = $(this).data("id");
+          setEditingId(id);
 
-          fetchContactForEdit(contactId).then(success => {
-            if (success) {
-              setShowModal(true); // open modal only after data is loaded
-            }
+          fetchMemoryForEdit(id).then(success => {
+            if (success) setShowModal(true);
           });
         });
+
 
 
         $(document).on("click", ".delete-contact", async function (e) {
@@ -784,7 +552,7 @@ const AppsDTContact = () => {
 
           try {
             const response = await fetch(
-              `${VITE_BASE_URL}/api/contacts/delete/${id}`,
+              `${VITE_BASE_URL}/api/memories/delete/${id}`,
               {
                 method: "DELETE",
                 headers: {
@@ -833,7 +601,7 @@ const AppsDTContact = () => {
           try {
             // Delete each selected ID
             for (let id of selectedIds) {
-              await fetch(`${VITE_BASE_URL}/api/contacts/delete/${id}`, {
+              await fetch(`${VITE_BASE_URL}/api/memories/delete/${id}`, {
                 method: "DELETE",
                 headers: {
                   Authorization: `Bearer ${token}`
@@ -890,10 +658,9 @@ const AppsDTContact = () => {
             <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="1">Name</a>
             <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="2">Email</a>
             <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="3">Phone</a>
-            <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="4">Address</a>
-            <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="5">Audio</a>
-            <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="6">Message</a>
-            <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="7">DOB</a>
+            <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="4">Type</a>
+            <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="5">DOB</a>
+            <a class="btn btn-sm btn-primary toggle-vis ml-2 mb-2" data-column="6">Description</a>
           </div>
         `);
 
@@ -935,7 +702,7 @@ const AppsDTContact = () => {
                   <div className="widget-header">
                     <div className="row">
                       <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                        <h4>Contacts List</h4>
+                        <h4>Memories</h4>
                       </div>
                     </div>
                   </div>
@@ -948,10 +715,9 @@ const AppsDTContact = () => {
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Address</th>
-                            <th className="text-center">Audio</th>
-                            <th>Message</th>
+                            <th>Type</th>
                             <th>DOB</th>
+                            <th>Description</th>
                             <th className="text-center">Action</th>
                           </tr>
                         </thead>
@@ -1013,19 +779,6 @@ const AppsDTContact = () => {
 
                     <div className="row mb-3">
                       <div className="col-md-6 mb-3 mb-md-0">
-                        <div className="contact-occupation">
-                          <i className="flaticon-fill-area" />
-                          <input
-                            type="text"
-                            id="c-occup"
-                            className="form-control"
-                            placeholder="Occupation"
-                            value={form.occup}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
                         <div className="contact-phone">
                           <i className="flaticon-telephone" />
                           <input
@@ -1039,10 +792,7 @@ const AppsDTContact = () => {
                           <small id="error-phone" className={`text-danger ${errors.ph ? '' : 'd-none'}`}>Phone number is required</small>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <div className="col-md-6 mb-3 mb-md-0">
+                      <div className="col-md-6">
                         <div className="contact-address">
                           <i className="flaticon-location-1" />
                           <input
@@ -1055,19 +805,6 @@ const AppsDTContact = () => {
                           />
                         </div>
                       </div>
-                      {/* <div className="col-md-6">
-                        <div className="contact-dob">
-                          <i className="flaticon-calendar" />
-                          <input
-                            type="date"
-                            id="c-dob"
-                            className="form-control"
-                            placeholder="Dob"
-                            value={form.dob}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </div> */}
                     </div>
 
                     <div className="row mb-3">
@@ -1087,39 +824,8 @@ const AppsDTContact = () => {
                         </div>
                       </div>
                       <div className="col-md-6">
-                        <p style={{ textAlign: "left", marginBottom: "5px" }}>Wedding Day</p>
+                        <p style={{ textAlign: "left", marginBottom: "5px" }}>Type</p>
 
-                        <div className="contact-wed-day">
-                          <i className="flaticon-calendar" />
-                          <input
-                            type="date"
-                            id="c-wedDay"
-                            className="form-control"
-                            placeholder="Wedding Day"
-                            value={form.wedDay}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <div className="col-md-6 mb-3 mb-md-0">
-                        <div className="contact-hint">
-                          <i className="flaticon-edit" />
-                          <input
-                            type="text"
-                            id="c-hint"
-                            className="form-control"
-                            placeholder="Hint"
-                            value={form.hint}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </div>
-
-                      {/* {user?.role === 'adm' && ( */}
-                      <div className="col-md-6">
                         <div className="contact-type">
                           <i className="flaticon-user-11" />
                           <select
@@ -1129,104 +835,23 @@ const AppsDTContact = () => {
                             onChange={handleChange}
                           >
                             <option value="" hidden>-- Select Type --</option>
-                            <option value="Relatives">Relatives</option>
-                            <option value="Friends">Friends</option>
-                            <option value="Close Friends">Close Friends</option>
-                            <option value="Close Relatives">Close Relatives</option>
-                            <option value="Business">Business</option>
-                            <option value="Mentors">Mentors</option>
-                            <option value="Inspirators">Inspirators</option>
-                            <option value="Others">Others</option>
+                            <option value="Birthday">Birthday</option>
+                            <option value="Wedding">Wedding</option>
+                            <option value="Death Aniversary">Death Aniversary</option>
+                            <option value="Other">Other</option>
                           </select>
                         </div>
                       </div>
-                      {/* )} */}
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-md-6">
-                        <div className="contact-gmap">
-                          <i className="flaticon-map" />
-                          <input
-                            type="text"
-                            id="c-gmap"
-                            className="form-control"
-                            placeholder="Google Map Location (click to select)"
-                            value={form.gmap || ""}
-                            onChange={handleChange}
-                            onClick={handleGetLocation}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-md-6">
-                        {form.gmap && (
-                          <div className="mt-2 contact-location-link" style={{ textAlign: "left" }}>
-                            <i className="flaticon-link" />
-                            <a
-                              href={`https://www.google.com/maps?q=${encodeURIComponent(form.gmap)}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ fontSize: "16px", color: "#4361ee" }}
-                            >
-                              View Location on Google Maps
-                            </a>
-                          </div>
-                        )}
-                      </div>
                     </div>
 
-                    <div className="row mb-3">
-                      <div className="col-md-6">
-                        <div className="contact-audio">
-                          <i className="flaticon-music" />
-                          <p style={{ textAlign: "left" }}>Select Audio</p>
-                          <input
-                            type="file"
-                            name="audioFile"
-                            id="c-audio"
-                            className="form-control"
-                            accept="audio/*"
-                            onChange={handleAudioChange}
-                          />
-                          {form.newAudio && (
-                            <audio
-                              key={form.newAudio.name + form.newAudio.size}
-                              controls
-                              style={{ width: "100%" }}
-                            >
-                              <source src={URL.createObjectURL(form.newAudio)} />
-                              Your browser does not support the audio element.
-                            </audio>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    {Array.isArray(form.audioFiles) && form.audioFiles.length > 0 && (
-                      <div className="row mt-3">
-                        {form.audioFiles
-                          .filter(item => item.file)
-                          .slice()
-                          .reverse()
-                          .map((item, index) => (
-                            <div className="col-md-2 mb-3" key={index}>
-                              <audio controls style={{ width: "100%" }}>
-                                <source src={`${VITE_BASE_URL}/uploads/audio/${item.file}`} />
-                                Your browser does not support the audio element.
-                              </audio>
-                              <div style={{ fontSize: "12px", textAlign: "center", marginTop: "4px" }}>
-                                {new Date(item.uploadedOn).toLocaleDateString()}
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    )}
+
+
 
                     <div className="row">
                       <div className="col-md-12">
                         <div className="contact-message mb-3">
                           <i className="flaticon-chat" />
-                          <p style={{ textAlign: "left", marginBottom: "5px" }}>Message</p>
+                          <p style={{ textAlign: "left", marginBottom: "5px" }}>Description</p>
                           <div style={{ height: '200px', overflow: 'hidden' }}>
                             <CKEditor
                               editor={ClassicEditor}
@@ -1244,27 +869,6 @@ const AppsDTContact = () => {
                       </div>
                     </div>
                   </form>
-
-                  {editingId && feedbacks.length > 0 && (
-                    <div className="mt-3">
-                      <h6 style={{ textAlign: 'left' }}>Previous Messages 📝</h6>
-                      <div
-                        className="feedback-list"
-                        style={{
-                          textAlign: 'left',
-                          maxHeight: '150px',
-                          overflowY: 'auto'
-                        }}
-                      >
-                        {feedbacks.map(msg => (
-                          <div key={msg._id} className="mb-1 border-bottom pb-1">
-                            <small className="text-muted d-block">{new Date(msg.crtdOn).toLocaleString()}</small>
-                            <div className="mb-0" dangerouslySetInnerHTML={{ __html: msg.message }} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -1272,12 +876,10 @@ const AppsDTContact = () => {
               {editingId ? (
                 <>
                   <button id="btn-edit" className="float-left btn btn-primary" onClick={handleSave}>Save</button>
-                  {/* <button className="btn" data-dismiss="modal">Discard</button> */}
                   <button className="btn" onClick={() => setShowModal(false)}>Discard</button>
                 </>
               ) : (
                 <>
-                  {/* <button className="btn" data-dismiss="modal">Discard</button> */}
                   <button className="btn" onClick={() => setShowModal(false)} >Discard</button>
                   <button id="btn-add" className="btn btn-primary" onClick={handleSave}>Add</button>
                 </>
@@ -1291,4 +893,4 @@ const AppsDTContact = () => {
   )
 }
 
-export default AppsDTContact;
+export default MemoriesOther;

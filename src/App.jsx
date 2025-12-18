@@ -32,7 +32,7 @@ import Diary from './pages/Diary';
 import Index2 from './pages/index2';
 import Stories from './pages/Stories';
 import BussIdea from './pages/BussIdea';
-import MissionVission from './pages/MissionVission';
+// import MissionVission from './pages/Mission';
 import Calendar from './pages/Calendar';
 import ListTable from './pages/listTable';
 import ContactTest from './pages/ContactTest';
@@ -40,8 +40,33 @@ import ContactTest1 from './pages/ContactTest1';
 import ContactTest2 from './pages/ContactTest2';
 import AppsDTContact from './pages/AppsDTContact';
 import MyTimeline from './pages/MyTimeline';
-// import Chat from './pages/Chat';
-// import Mailbox from './pages/Mailbox';
+import Chat from './pages/Chat';
+import Mailbox from './pages/Mailbox';
+import MutualFund from './pages/MutualFund';
+import Shares from './pages/Shares';
+import Memories from './pages/Memories';
+import SharesFollow from './pages/SharesFollow';
+import SharesSnoozed from './pages/SharesSnoozed';
+import SharesWishlist from './pages/SharesWishlist';
+import SharesOther from './pages/SharesOther';
+import MutualFundFollow from './pages/MutualFundFollow';
+import MutualFundSnoozed from './pages/MutualFundSnoozed';
+import MutualFundWishlist from './pages/MutualFundWishlist';
+import MutualFundOther from './pages/MutualFundOther';
+import MemoriesBday from './pages/MemoriesBday';
+import MemoriesWedding from './pages/MemoriesWedding';
+import MemoriesDeath from './pages/MemoriesDeath';
+import MemoriesOther from './pages/MemoriesOther';
+import Mission from './pages/Mission';
+import Vission from './pages/Vission';
+import BudgetY from './pages/BudgetY';
+import BudgetHY from './pages/BudgetHY';
+import Fund from './pages/Fund';
+import FinancialOL from './pages/FinancialOL';
+import Budget from './pages/Budget';
+import BudgetQuarterly from './pages/BudgetQuarterly';
+import Plan from './pages/Plan';
+import PlanQuarterly from './pages/PlanQuarterly';
 
 function App() {
   return (
@@ -74,7 +99,8 @@ function App() {
           <Route path="/diary" element={<ProtectedRoute><Diary /></ProtectedRoute>} />
           <Route path="/stry" element={<ProtectedRoute><Stories /></ProtectedRoute>} />
           <Route path="/bussIdea" element={<ProtectedRoute><BussIdea /></ProtectedRoute>} />
-          <Route path="/misvis" element={<ProtectedRoute><MissionVission /></ProtectedRoute>} />
+          <Route path="/mission" element={<ProtectedRoute><Mission /></ProtectedRoute>} />
+          <Route path="/vission" element={<ProtectedRoute><Vission /></ProtectedRoute>} />
           <Route path="/clndr" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
           <Route path="/myTmln" element={<ProtectedRoute><MyTimeline /></ProtectedRoute>} />
           <Route path="/listTable" element={<ProtectedRoute><ListTable /></ProtectedRoute>} />
@@ -82,13 +108,41 @@ function App() {
           <Route path="/contactTest1" element={<ProtectedRoute><ContactTest1 /></ProtectedRoute>} />
           <Route path="/contactTest2" element={<ProtectedRoute><ContactTest2 /></ProtectedRoute>} />
           <Route path="/appdtcnt" element={<ProtectedRoute><AppsDTContact /></ProtectedRoute>} />
-          {/* <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-          <Route path="/mailbox" element={<ProtectedRoute><Mailbox /></ProtectedRoute>} /> */}
+          <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+          <Route path="/mailbox" element={<ProtectedRoute><Mailbox /></ProtectedRoute>} />
+           <Route path="/mutlFnd" element={<ProtectedRoute><MutualFund /></ProtectedRoute>} />
+          {/*<Route path="/mutlFndFlw" element={<ProtectedRoute><MutualFund /></ProtectedRoute>} />
+          <Route path="/mutlFndSnzd" element={<ProtectedRoute><MutualFund /></ProtectedRoute>} />
+          <Route path="/mutlFndWshlst" element={<ProtectedRoute><MutualFund /></ProtectedRoute>} />
+          <Route path="/mutlFndOthr" element={<ProtectedRoute><MutualFund /></ProtectedRoute>} /> */}
+          <Route path="/mutualFund/:type?" element={<ProtectedRoute><MutualFund /></ProtectedRoute>}/>
 
+
+          <Route path="/shrs" element={<ProtectedRoute><Shares /></ProtectedRoute>} />
+          <Route path="/shrsFlw" element={<ProtectedRoute><SharesFollow /></ProtectedRoute>} />
+          <Route path="/shrsSnzd" element={<ProtectedRoute><SharesSnoozed /></ProtectedRoute>} />
+          <Route path="/shtsWshlst" element={<ProtectedRoute><SharesWishlist /></ProtectedRoute>} />
+          <Route path="/shrsOthr" element={<ProtectedRoute><SharesOther /></ProtectedRoute>} />
+
+          <Route path="/memris" element={<ProtectedRoute><Memories /></ProtectedRoute>} />
+          <Route path="/memrisBday" element={<ProtectedRoute><MemoriesBday /></ProtectedRoute>} />
+          <Route path="/memrisWedng" element={<ProtectedRoute><MemoriesWedding /></ProtectedRoute>} />
+          <Route path="/memrisDth" element={<ProtectedRoute><MemoriesDeath /></ProtectedRoute>} />
+          <Route path="/memrisOthr" element={<ProtectedRoute><MemoriesOther /></ProtectedRoute>} />
+
+          <Route path="/bdgtYrly" element={<ProtectedRoute><BudgetY /></ProtectedRoute>} />
+          <Route path="/budgetHYrly" element={<ProtectedRoute><BudgetHY /></ProtectedRoute>} />
+
+          <Route path="/plan/:type" element={<ProtectedRoute><Plan /></ProtectedRoute>} />
+          <Route path="/planQtr" element={<ProtectedRoute><PlanQuarterly /></ProtectedRoute>} />
+          <Route path="/fund/:type" element={<ProtectedRoute><Fund /></ProtectedRoute>} />
+          <Route path="/financialOL/:type" element={<ProtectedRoute><FinancialOL /></ProtectedRoute>} />
+          <Route path="/budget/:type" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
+          <Route path="/budgetQtr" element={<ProtectedRoute><BudgetQuarterly /></ProtectedRoute>} />
 
 
           {/* Add other routes as needed */}
-          
+
           {/* Catch-all route for 404 errors */}
           <Route path="*" element={<Error404 />} />
         </Routes>

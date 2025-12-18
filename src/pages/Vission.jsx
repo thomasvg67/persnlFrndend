@@ -10,7 +10,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
-const MissionVission = () => {
+const Vission = () => {
 
     const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
     const { token } = useContext(AuthContext);
@@ -34,7 +34,7 @@ const MissionVission = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${VITE_BASE_URL}/api/mission`, {
+            const res = await axios.get(`${VITE_BASE_URL}/api/vission`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setLists(res.data);
@@ -47,21 +47,21 @@ const MissionVission = () => {
 
     const handleAddList = async () => {
     if (!name.trim()) {
-        toast.warn('Mission name is required');
+        toast.warn('Vission name is required');
         return;
     }
 
     setOperationLoading(true);
     try {
-        await axios.post(`${VITE_BASE_URL}/api/mission`, { name }, {
+        await axios.post(`${VITE_BASE_URL}/api/vission`, { name }, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        toast.success('Mission added successfully!');
+        toast.success('Vission added successfully!');
         setName('');
         fetchData();
         $('#addListModal').modal('hide');
     } catch (err) {
-        toast.error(err.response?.data?.message || 'Failed to add mission');
+        toast.error(err.response?.data?.message || 'Failed to add vission');
     } finally {
         setOperationLoading(false);
     }
@@ -71,22 +71,22 @@ const MissionVission = () => {
     const handleEditList = async () => {
     if (!selectedList) return;
     if (!name.trim()) {
-        toast.warn('Mission name is required');
+        toast.warn('Vission name is required');
         return;
     }
 
     setOperationLoading(true);
     try {
-        await axios.put(`${VITE_BASE_URL}/api/mission/${selectedList._id}`, { name }, {
+        await axios.put(`${VITE_BASE_URL}/api/vission/${selectedList._id}`, { name }, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        toast.success('Mission updated successfully!');
+        toast.success('Vission updated successfully!');
         setName('');
         setSelectedList(null);
         fetchData();
         $('#addListModal').modal('hide');
     } catch (err) {
-        toast.error(err.response?.data?.message || 'Failed to edit mission');
+        toast.error(err.response?.data?.message || 'Failed to edit vission');
     } finally {
         setOperationLoading(false);
     }
@@ -101,7 +101,7 @@ const MissionVission = () => {
 
     setOperationLoading(true);
     try {
-        await axios.post(`${VITE_BASE_URL}/api/mission/${selectedList._id}/visions`, {
+        await axios.post(`${VITE_BASE_URL}/api/vission/${selectedList._id}/visions`, {
             title: taskTitle,
             description: taskDesc,
         }, { headers: { Authorization: `Bearer ${token}` } });
@@ -133,7 +133,7 @@ const MissionVission = () => {
 
     setOperationLoading(true);
     try {
-        await axios.put(`${VITE_BASE_URL}/api/mission/${selectedList._id}/visions/${selectedTask._id}`, {
+        await axios.put(`${VITE_BASE_URL}/api/vission/${selectedList._id}/visions/${selectedTask._id}`, {
             title: taskTitle,
             description: taskDesc,
         }, { headers: { Authorization: `Bearer ${token}` } });
@@ -158,17 +158,17 @@ const MissionVission = () => {
     setOperationLoading(true);
     try {
         if (deleteType === 'list' && deleteList) {
-            await axios.delete(`${VITE_BASE_URL}/api/mission/${deleteList._id}`, {
+            await axios.delete(`${VITE_BASE_URL}/api/vission/${deleteList._id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            toast.success('Mission deleted successfully');
+            toast.success('Vission deleted successfully');
         } else if (deleteType === 'task' && deleteTask && selectedList) {
-            await axios.delete(`${VITE_BASE_URL}/api/mission/${selectedList._id}/visions/${deleteTask._id}`, {
+            await axios.delete(`${VITE_BASE_URL}/api/vission/${selectedList._id}/visions/${deleteTask._id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             toast.success('Vision deleted successfully');
         } else if (deleteType === 'clear' && clearTasksList) {
-            await axios.put(`${VITE_BASE_URL}/api/mission/${clearTasksList._id}/clear-visions`, {}, {
+            await axios.put(`${VITE_BASE_URL}/api/vission/${clearTasksList._id}/clear-visions`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             toast.success('All visions cleared');
@@ -189,11 +189,11 @@ const MissionVission = () => {
 
 
     const handleClearAllTasks = async (listId) => {
-    if (!window.confirm('Are you sure you want to delete all visions in this mission?')) return;
+    if (!window.confirm('Are you sure you want to delete all visions in this vission?')) return;
 
     setOperationLoading(true);
     try {
-        await axios.put(`${VITE_BASE_URL}/api/mission/${listId}/clear-visions`, {}, {
+        await axios.put(`${VITE_BASE_URL}/api/vission/${listId}/clear-visions`, {}, {
             headers: { Authorization: `Bearer ${token}` },
         });
         toast.success('All visions cleared successfully');
@@ -276,7 +276,7 @@ const MissionVission = () => {
                 <div id="content" className="main-content">
                     <div className="layout-px-spacing">
                         <div className="action-btn layout-top-spacing mb-5">
-                            <button id="add-list" className="btn btn-dark" onClick={onAddList}>Add Mission</button>
+                            <button id="add-list" className="btn btn-dark" onClick={onAddList}>Add Vission</button>
                         </div>
                         <div className="modal fade" id="addTaskModal" tabIndex={-1} role="dialog" aria-labelledby="addTaskModalTitle" aria-hidden="true">
                             <div className="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -339,14 +339,14 @@ const MissionVission = () => {
                                     <div className="modal-body">
                                         <div className="compose-box">
                                             <div className="compose-content" id="addListModalTitle">
-                                                <h5 className="add-list-title" style={{ display: selectedList ? 'none' : 'block' }}>Add Mission</h5>
-                                                <h5 className="edit-list-title" style={{ display: selectedList ? 'block' : 'none' }}>Edit Mission</h5>
+                                                <h5 className="add-list-title" style={{ display: selectedList ? 'none' : 'block' }}>Add Vission</h5>
+                                                <h5 className="edit-list-title" style={{ display: selectedList ? 'block' : 'none' }}>Edit Vission</h5>
                                                 <form action="javascript:void(0);" onSubmit={(e) => e.preventDefault()}>
                                                     <div className="row">
                                                         <div className="col-md-12">
                                                             <div className="list-title">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-list"><line x1={8} y1={6} x2={21} y2={6} /><line x1={8} y1={12} x2={21} y2={12} /><line x1={8} y1={18} x2={21} y2={18} /><line x1={3} y1={6} x2={3} y2={6} /><line x1={3} y1={12} x2={3} y2={12} /><line x1={3} y1={18} x2={3} y2={18} /></svg>
-                                                                <input id="s-list-name" type="text" placeholder="Mission Name" className="form-control" name="task" value={name} onChange={(e) => setName(e.target.value)} required />
+                                                                <input id="s-list-name" type="text" placeholder="Vission Name" className="form-control" name="task" value={name} onChange={(e) => setName(e.target.value)} required />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -356,7 +356,7 @@ const MissionVission = () => {
                                     </div>
                                     <div className="modal-footer">
                                         <button className="btn" data-dismiss="modal" onClick={() => { setName(''); setSelectedList(null); }}><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="feather feather-x"><line x1={18} y1={6} x2={6} y2={18} /><line x1={6} y1={6} x2={18} y2={18} /></svg> Discard</button>
-                                        {!selectedList && (<button className="btn add-list" onClick={handleAddList}>Add Mission</button>)}
+                                        {!selectedList && (<button className="btn add-list" onClick={handleAddList}>Add Vission</button>)}
                                         {selectedList && (<button className="btn edit-list" onClick={handleEditList}>Save</button>)}
                                     </div>
                                 </div>
@@ -376,9 +376,9 @@ const MissionVission = () => {
                                         </button>
                                     </div>
                                     <div className="modal-body">
-                                        <p className=""> {deleteType === 'list' && "If you delete the Mission it will be gone forever. Are you sure you want to proceed?"}</p>
+                                        <p className=""> {deleteType === 'list' && "If you delete the Vission it will be gone forever. Are you sure you want to proceed?"}</p>
                                         <p className=""> {deleteType === 'task' && "If you delete the Vission it will be gone forever. Are you sure you want to proceed?"}</p>
-                                        <p className="">{deleteType === 'clear' && "If you clear all the Mission it will be gone forever. Are you sure you want to proceed?"}</p>
+                                        <p className="">{deleteType === 'clear' && "If you clear all the Vission it will be gone forever. Are you sure you want to proceed?"}</p>
                                     </div>
                                     <div className="modal-footer">
                                         <button type="button" className="btn" data-dismiss="modal">Cancel</button>
@@ -449,7 +449,7 @@ const MissionVission = () => {
                                         ))
                                         ) : (
                                             <div className="text-center mt-4">
-                                                <h5>No data saved</h5>
+                                                <h5>No Vission saved</h5>
                                             </div>
                                         )}
                                 </div>
@@ -464,4 +464,4 @@ const MissionVission = () => {
 }
 
 
-export default MissionVission
+export default Vission

@@ -3,44 +3,41 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const tagClasses = {
-  personal: "note-personal",
-  work: "note-work",
-  // social: "note-social",
-  important: "note-important",
-  // bibilical: "note-bibilical",
-  banking: "note-banking",
-  agri: "note-agri",
-  health: "note-health",
-  business: "note-business",
-  // allopathy: "note-allopathy",
-  // ayurvedam: "note-ayurvedam",
-  // homio: "note-homio",
-  // electronics: "note-electronics",
-  software: "note-software",
-  general: "note-general",
+  done: "note-banking",   // 1st Quarter
+  pending: "note-agri",      // 2nd Quarter
+  important: "note-health",    // 3rd Quarter
+  trash: "note-business",  // 4th Quarter
 
   "": "note-default"
 };
 
-const TimelineCard = ({ timeline, onDelete, onToggleFav, onTagChange, setLoading, onEdit }) => {
+const quarterOptions = [
+  { label: "Done", value: "done", dot: "banking" },
+  { label: "Pending", value: "pending", dot: "agri" },
+  { label: "Important", value: "important", dot: "health" },
+  { label: "Trash", value: "trash", dot: "business" }
+];
+
+
+const PlanQtrCard = ({ planQtr, onDelete, onToggleFav, onTagChange, setLoading, onEdit }) => {
 
   const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
-  const [tag, setTag] = useState(timeline.tag || "");
-  const [isFav, setIsFav] = useState(Boolean(timeline.isFav));
+  const [tag, setTag] = useState(planQtr.tag || "");
+  const [isFav, setIsFav] = useState(Boolean(planQtr.isFav));
 
   useEffect(() => {
-    setIsFav(Boolean(timeline.isFav));
-  }, [timeline.isFav]);
+    setIsFav(Boolean(planQtr.isFav));
+  }, [planQtr.isFav]);
 
   const handleTagChange = async (newTag) => {
     // setLoading?.(true);
     try {
-      const res = await axios.put(`${VITE_BASE_URL}/api/timeline/tag/${timeline._id}`, {
+      const res = await axios.put(`${VITE_BASE_URL}/api/planQtr/tag/${planQtr._id}`, {
         tag: newTag,
       });
       if (res.data.success) {
         setTag(newTag);
-        onTagChange?.(timeline._id, newTag);
+        onTagChange?.(planQtr._id, newTag);
       } else {
         toast.error(res.data.message || 'Tag update failed');
       }
@@ -55,12 +52,12 @@ const TimelineCard = ({ timeline, onDelete, onToggleFav, onTagChange, setLoading
   const handleFavToggle = async () => {
     // setLoading?.(true);
     try {
-      const res = await axios.put(`${VITE_BASE_URL}/api/timeline/fav/${timeline._id}`, {
+      const res = await axios.put(`${VITE_BASE_URL}/api/planQtr/fav/${planQtr._id}`, {
         isFav: !isFav,
       });
       if (res.data.success) {
         setIsFav(!isFav);
-        onToggleFav?.(timeline._id, !isFav);
+        onToggleFav?.(planQtr._id, !isFav);
       } else {
         toast.error(res.data.message || 'Failed to update favourite');
       }
@@ -75,42 +72,43 @@ const TimelineCard = ({ timeline, onDelete, onToggleFav, onTagChange, setLoading
   const handleDelete = async () => {
     // setLoading?.(true);
     try {
-      const res = await axios.delete(`${VITE_BASE_URL}/api/timeline/${timeline._id}`);
+      const res = await axios.delete(`${VITE_BASE_URL}/api/planQtr/${planQtr._id}`);
       if (res.data.success) {
-        onDelete?.(timeline._id);
+        onDelete?.(planQtr._id);
       } else {
         toast.error(res.data.message || 'Delete failed');
       }
     } catch (err) {
-      console.error("Error deleting timeline:", err);
-      toast.error("Server error while deleting timeline");
+      console.error("Error deleting planQtr:", err);
+      toast.error("Server error while deleting planQtr");
     } finally {
       // setLoading?.(false);
     }
   };
 
 
-  const formattedDate = new Date(timeline.crtdOn).toLocaleDateString();
+  const formattedDate = new Date(planQtr.crtdOn).toLocaleDateString();
 
   return (
     <div className={`note-item all-notes ${tagClasses[tag] || 'note-default'}`}>
       <div className="note-inner-content">
         <div className="note-content">
-          <p className="note-title" data-notetitle={timeline.title}>{timeline.title}</p>
+          <p className="note-title" data-notetitle={planQtr.title}>{planQtr.title}</p>
           <p className="meta-time">{formattedDate}</p>
           <div className="note-description-content">
             <div className="note-description-content">
+              <div className='note-description'><i>{planQtr.quarter} months</i></div>
               <div
                 className="note-description"
-                data-notedescription={timeline.desc}
-                dangerouslySetInnerHTML={{ __html: timeline.desc }}
+                data-notedescription={planQtr.desc}
+                dangerouslySetInnerHTML={{ __html: planQtr.desc }}
               />
             </div>
           </div>
         </div>
         <div className="note-action">
           {/* Favourite Star */}
-          <svg
+          {/* <svg
             onClick={handleFavToggle}
             xmlns="http://www.w3.org/2000/svg"
             width={24}
@@ -129,7 +127,7 @@ const TimelineCard = ({ timeline, onDelete, onToggleFav, onTagChange, setLoading
               12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
               fill={isFav ? "gold" : "none"} // Fully filled star
             />
-          </svg>
+          </svg> */}
 
           {/* Edit Icon */}
           {/* <svg
@@ -176,10 +174,10 @@ const TimelineCard = ({ timeline, onDelete, onToggleFav, onTagChange, setLoading
           <div className="tags-selector btn-group">
             <a className="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
               <div className="tags">
-                <div className="g-dot-personal" />
-                <div className="g-dot-work" />
+                {/* <div className="g-dot-personal" />
+                <div className="g-dot-work" /> */}
                 {/* <div className="g-dot-social" /> */}
-                <div className="g-dot-important" />
+                {/* <div className="g-dot-important" /> */}
                 {/* <div className='g-dot-bibilical' /> */}
                 <div className="g-dot-banking" />
                 <div className="g-dot-agri" />
@@ -189,8 +187,8 @@ const TimelineCard = ({ timeline, onDelete, onToggleFav, onTagChange, setLoading
                 <div className="g-dot-ayurvedam" />
                 <div className="g-dot-homio" />
                 <div className="g-dot-electronics" /> */}
-                <div className="g-dot-software" />
-                <div className="g-dot-general" />
+                {/* <div className="g-dot-software" />
+                <div className="g-dot-general" /> */}
                 <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24}
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
@@ -214,33 +212,18 @@ const TimelineCard = ({ timeline, onDelete, onToggleFav, onTagChange, setLoading
               ))}
             </div> */}
             <div className="dropdown-menu dropdown-menu-right d-icon-menu">
-              {[
-                "personal",
-                "work",
-                // "social",
-                "important",
-                // "bibilical",
-                "banking",
-                "agri",
-                "health",
-                "business",
-                // "allopathy",
-                // "ayurvedam",
-                // "homio",
-                // "electronics",
-                "software",
-                "general"
-              ].map((t) => (
+              {quarterOptions.map(q => (
                 <a
-                  key={t}
-                  onClick={() => handleTagChange(t)}
-                  className={`dropdown-item position-relative g-dot-${t} note-${t} label-group-item label-${t}`}
+                  key={q.value}
+                  onClick={() => handleTagChange(q.value)}
+                  className={`dropdown-item position-relative g-dot-${q.dot} note-${q.dot} label-group-item`}
                   href="#"
                 >
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                  {q.label}
                 </a>
               ))}
             </div>
+
 
           </div>
         </div>
@@ -249,4 +232,4 @@ const TimelineCard = ({ timeline, onDelete, onToggleFav, onTagChange, setLoading
   );
 };
 
-export default TimelineCard;
+export default PlanQtrCard;

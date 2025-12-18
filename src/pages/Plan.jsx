@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Nav from "../components/Nav";
@@ -12,12 +13,13 @@ import { AuthContext } from "../contexts/AuthContext";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
-const AppsToDoList = () => {
+const Plan = () => {
 
     const url = import.meta.env.VITE_BASE_URL;
     // const [token, setToken] = useState(localStorage.getItem('token') || null);
     const { token } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
+    const { type } = useParams();
 
     const hasLoaded = useRef(false);
     function loadScript(src, options = {}) {
@@ -45,34 +47,20 @@ const AppsToDoList = () => {
     }
 
     useEffect(() => {
-        if (hasLoaded.current) return;
-        hasLoaded.current = true;
-
         (async () => {
             try {
-                // console.log('Loading padStart fix...');
                 await loadScript('/assets/js/ie11fix/fn.fix-padStart.js', { async: true });
-
-                // console.log('Loading Quill...');
                 await loadScript('/plugins/editors/quill/quill.js', { async: true });
-
-                // console.log('Loading todoList...');
                 await loadScript('/assets/js/apps/todoList.js', { defer: true });
-
-                // console.log('All scripts loaded in order!');
-
-                getTodos();
-
             } catch (err) {
                 console.error(err);
             }
         })();
-
-        return () => {
-        };
     }, []);
 
-
+    useEffect(() => {
+        getTodos();
+    }, [type]);
 
 
     //get todos list
@@ -83,23 +71,23 @@ const AppsToDoList = () => {
     const [importanttodos, setImportanttodos] = useState([]);
     const getTodos = () => {
         setLoading(true);
-        axios.get(url + '/api/todolist/', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.get(`${url}/api/plan?type=${type}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => { setTodos(res.data); })
             .catch((err) => { console.log(err); })
 
-        axios.get(url + '/api/todolist/pending', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.get(`${url}/api/plan/pending?type=${type}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => { setPendingTodos(res.data); })
             .catch((err) => { console.log(err); })
 
-        axios.get(url + '/api/todolist/trash', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.get(`${url}/api/plan/trash?type=${type}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => { setTrashtodos(res.data); })
             .catch((err) => { console.log(err); })
 
-        axios.get(url + '/api/todolist/taskdone', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.get(`${url}/api/plan/taskdone?type=${type}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => { setTaskdonetodos(res.data); })
             .catch((err) => { console.log(err); })
 
-        axios.get(url + '/api/todolist/important', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.get(`${url}/api/plan/important?type=${type}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => { setImportanttodos(res.data); })
             .catch((err) => { console.log(err); })
             .finally(() => setLoading(false));
@@ -121,8 +109,9 @@ const AppsToDoList = () => {
             "important": 0,
             "created_by": "admin",
             "priority": "middle",
+            type
         };
-        axios.post(url + '/api/todolist/', payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.post(url + '/api/plan/', payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -137,7 +126,7 @@ const AppsToDoList = () => {
 
     //Edit Todos
     const handleEdit = (id) => {
-        axios.get(url + '/api/todolist/' + id, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.get(url + '/api/plan/' + id, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 setTask(res.data.task);
                 setDescription(res.data.description);
@@ -158,7 +147,7 @@ const AppsToDoList = () => {
             "task_done": 0,
             "important": 0,
         };
-        axios.put(url + '/api/todolist/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.put(url + '/api/plan/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -173,7 +162,7 @@ const AppsToDoList = () => {
 
     // delete Todos
     const handleDelete = (id) => {
-        axios.delete(url + '/api/todolist/' + id, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.delete(url + '/api/plan/' + id, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -184,7 +173,7 @@ const AppsToDoList = () => {
     // Mark Todos as important
     const handleImportant = (id) => {
         const payload = {};
-        axios.put(url + '/api/todolist/markimportant/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.put(url + '/api/plan/markimportant/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -195,7 +184,7 @@ const AppsToDoList = () => {
     // Mark Todos as Task Done
     const handleTaskDone = (id) => {
         const payload = {};
-        axios.put(url + '/api/todolist/taskdone/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.put(url + '/api/plan/taskdone/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -206,7 +195,7 @@ const AppsToDoList = () => {
     // Mark Todos as Not Task Done
     const handleTaskDoneRemove = (id) => {
         const payload = {};
-        axios.put(url + '/api/todolist/taskdoneremove/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.put(url + '/api/plan/taskdoneremove/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -224,7 +213,7 @@ const AppsToDoList = () => {
 
     const handleRevive = (id) => {
         const payload = {};
-        axios.put(url + '/api/todolist/revive/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.put(url + '/api/plan/revive/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -233,7 +222,7 @@ const AppsToDoList = () => {
     }
 
     const handlePermanentDelete = (id) => {
-        axios.delete(url + '/api/todolist/permanentdelete/' + id, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.delete(url + '/api/plan/permanentdelete/' + id, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -245,7 +234,7 @@ const AppsToDoList = () => {
         const payload = {
             "priority": priority,
         };
-        axios.put(url + '/api/todolist/priority/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        axios.put(url + '/api/plan/priority/' + id, payload, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 getTodos();
@@ -275,14 +264,14 @@ const AppsToDoList = () => {
                                         <div className="row">
                                             <div className="col-md-12 col-sm-12 col-12 text-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                                                <h5 className="app-title">Todo List</h5>
+                                                <h5 className="app-title">  {type.charAt(0).toUpperCase() + type.slice(1)} Plan</h5>
                                             </div>
 
                                             <div className="todoList-sidebar-scroll">
                                                 <div className="col-md-12 col-sm-12 col-12 mt-4 pl-0">
                                                     <ul className="nav nav-pills d-block" id="pills-tab" role="tablist">
                                                         <li className="nav-item">
-                                                            <a className="nav-link list-actions active" id="all-list" data-toggle="pill" href="#pills-inbox" role="tab" aria-selected="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg> Inbox <span className="todo-badge badge"></span></a>
+                                                            <a className="nav-link list-actions active" id="all-list" data-toggle="pill" href="#pills-inbox" role="tab" aria-selected="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg> Plan <span className="todo-badge badge"></span></a>
                                                         </li>
                                                         <li className="nav-item">
                                                             <a className="nav-link list-actions" id="todo-task-done" data-toggle="pill" href="#pills-sentmail" role="tab" aria-selected="false"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-thumbs-up"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Done <span className="todo-badge badge"></span></a>
@@ -300,7 +289,7 @@ const AppsToDoList = () => {
                                                 </div>
                                             </div>
 
-                                            <a className="btn" id="addTask" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> New Task</a>
+                                            <a className="btn" id="addTask" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> New Plan</a>
                                         </div>
                                     </div>
 
@@ -343,7 +332,15 @@ const AppsToDoList = () => {
                                                                 <div className="todo-content">
                                                                     <h5 className="todo-heading" data-todoheading={todo.task}>{todo.task}</h5>
                                                                     <p className="meta-date">{formatted}</p>
-                                                                    <p className="todo-text" data-todohtml={todo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${todo.description}\n` }] })}>{todo.description}</p>
+                                                                    {/* <p className="todo-text" data-todohtml={todo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${todo.description}\n` }] })}>{todo.description}</p> */}
+                                                                    <p
+                                                                        className="todo-text"
+                                                                        data-todohtml={todo.description}
+                                                                        data-todotext={JSON.stringify({ ops: [{ insert: `${todo.description}\n` }] })}
+                                                                    >
+                                                                        {todo.description.replace(/<\/?[^>]+(>|$)/g, "")}
+                                                                    </p>
+
                                                                 </div>
 
                                                                 <div className="priority-dropdown custom-dropdown-icon">
@@ -371,7 +368,7 @@ const AppsToDoList = () => {
                                                                             <a className="important dropdown-item" href="#" onClick={(e) => { e.preventDefault(); handleImportant(todo._id); }} >Important</a>
                                                                             <a className="dropdown-item delete" href="#" onClick={(e) => { e.preventDefault(); handleDelete(todo._id) }} >Delete</a>
                                                                             <a className="dropdown-item permanent-delete" href="#">Permanent Delete</a>
-                                                                            <a className="dropdown-item revive" href="#">Revive Task</a>
+                                                                            <a className="dropdown-item revive" href="#">Revive Plan</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -410,7 +407,19 @@ const AppsToDoList = () => {
                                                                 <div className="todo-content">
                                                                     <h5 className="todo-heading" data-todoheading={pendingtodo.task}>{pendingtodo.task}</h5>
                                                                     <p className="meta-date">{formatted}</p>
-                                                                    <p className="todo-text" data-todohtml={pendingtodo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${pendingtodo.description}\n` }] })}>{pendingtodo.description}</p>
+                                                                    {/* <p className="todo-text" data-todohtml={pendingtodo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${pendingtodo.description}\n` }] })}>{pendingtodo.description}</p> */}
+                                                                    <p
+                                                                        className="todo-text"
+                                                                        data-todohtml={pendingtodo.description}
+                                                                        data-todotext={JSON.stringify({ ops: [{ insert: `${pendingtodo.description}\n` }] })}
+                                                                    >
+                                                                        {pendingtodo.description
+                                                                            // Remove HTML tags
+                                                                            .replace(/<\/?[^>]+(>|$)/g, "")
+                                                                            // Capitalize first letter of each word
+                                                                            .replace(/\b\w/g, (char) => char.toUpperCase())}
+                                                                    </p>
+
                                                                 </div>
 
                                                                 <div className="priority-dropdown custom-dropdown-icon">
@@ -438,7 +447,7 @@ const AppsToDoList = () => {
                                                                             <a className="important dropdown-item" href="#" onClick={(e) => { e.preventDefault(); handleImportant(pendingtodo._id); }} >Important</a>
                                                                             <a className="dropdown-item delete" href="#" onClick={(e) => { e.preventDefault(); handleDelete(pendingtodo._id) }} >Delete</a>
                                                                             <a className="dropdown-item permanent-delete" href="#">Permanent Delete</a>
-                                                                            <a className="dropdown-item revive" href="#">Revive Task</a>
+                                                                            <a className="dropdown-item revive" href="#">Revive PLan</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -477,7 +486,19 @@ const AppsToDoList = () => {
                                                                 <div className="todo-content">
                                                                     <h5 className="todo-heading" data-todoheading={taskdonetodo.task}>{taskdonetodo.task}</h5>
                                                                     <p className="meta-date">{formatted}</p>
-                                                                    <p className="todo-text" data-todohtml={taskdonetodo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${taskdonetodo.description}\n` }] })}>{taskdonetodo.description}</p>
+                                                                    {/* <p className="todo-text" data-todohtml={taskdonetodo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${taskdonetodo.description}\n` }] })}>{taskdonetodo.description}</p> */}
+                                                                    <p
+                                                                        className="todo-text"
+                                                                        data-todohtml={taskdonetodo.description}
+                                                                        data-todotext={JSON.stringify({ ops: [{ insert: `${taskdonetodo.description}\n` }] })}
+                                                                    >
+                                                                        {taskdonetodo.description
+                                                                            // Remove HTML tags
+                                                                            .replace(/<\/?[^>]+(>|$)/g, "")
+                                                                            // Capitalize first letter of each word
+                                                                            .replace(/\b\w/g, (char) => char.toUpperCase())}
+                                                                    </p>
+
                                                                 </div>
 
                                                                 <div className="priority-dropdown custom-dropdown-icon">
@@ -505,7 +526,7 @@ const AppsToDoList = () => {
                                                                             <a className="important dropdown-item" href="#" onClick={(e) => { e.preventDefault(); handleImportant(taskdonetodo._id); }} >Important</a>
                                                                             <a className="dropdown-item delete" href="#" onClick={(e) => { e.preventDefault(); handleDelete(taskdonetodo._id) }} >Delete</a>
                                                                             <a className="dropdown-item permanent-delete" href="#">Permanent Delete</a>
-                                                                            <a className="dropdown-item revive" href="#">Revive Task</a>
+                                                                            <a className="dropdown-item revive" href="#">Revive Plan</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -544,7 +565,15 @@ const AppsToDoList = () => {
                                                                 <div className="todo-content">
                                                                     <h5 className="todo-heading" data-todoheading={importanttodo.task}>{importanttodo.task}</h5>
                                                                     <p className="meta-date">{formatted}</p>
-                                                                    <p className="todo-text" data-todohtml={importanttodo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${importanttodo.description}\n` }] })}>{importanttodo.description}</p>
+                                                                    {/* <p className="todo-text" data-todohtml={importanttodo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${importanttodo.description}\n` }] })}>{importanttodo.description}</p> */}
+                                                                    <p
+                                                                        className="todo-text"
+                                                                        data-todohtml={importanttodo.description}
+                                                                        data-todotext={JSON.stringify({ ops: [{ insert: `${importanttodo.description}\n` }] })}
+                                                                    >
+                                                                        {importanttodo.description.replace(/<\/?[^>]+(>|$)/g, "")}
+                                                                    </p>
+
                                                                 </div>
 
                                                                 <div className="priority-dropdown custom-dropdown-icon">
@@ -572,7 +601,7 @@ const AppsToDoList = () => {
                                                                             <a className="important dropdown-item" href="#" onClick={(e) => { e.preventDefault(); handleImportant(importanttodo._id); }} >Important</a>
                                                                             <a className="dropdown-item delete" href="#" onClick={(e) => { e.preventDefault(); handleDelete(importanttodo._id) }} >Delete</a>
                                                                             <a className="dropdown-item permanent-delete" href="#">Permanent Delete</a>
-                                                                            <a className="dropdown-item revive" href="#">Revive Task</a>
+                                                                            <a className="dropdown-item revive" href="#">Revive Plan</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -602,7 +631,15 @@ const AppsToDoList = () => {
                                                                 <div className="todo-content">
                                                                     <h5 className="todo-heading" data-todoheading={trashtodo.task}> Trash : {trashtodo.task}</h5>
                                                                     <p className="meta-date">{formatted}</p>
-                                                                    <p className="todo-text" data-todohtml={trashtodo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${trashtodo.description}\n` }] })}>{trashtodo.description}</p>
+                                                                    {/* <p className="todo-text" data-todohtml={trashtodo.description} data-todotext={JSON.stringify({ ops: [{ insert: `${trashtodo.description}\n` }] })}>{trashtodo.description}</p> */}
+                                                                    <p
+                                                                        className="todo-text"
+                                                                        data-todohtml={trashtodo.description}
+                                                                        data-todotext={JSON.stringify({ ops: [{ insert: `${trashtodo.description}\n` }] })}
+                                                                    >
+                                                                        {trashtodo.description.replace(/<\/?[^>]+(>|$)/g, "")}
+                                                                    </p>
+
                                                                 </div>
 
                                                                 <div className="priority-dropdown custom-dropdown-icon">
@@ -630,7 +667,7 @@ const AppsToDoList = () => {
                                                                             <a className="important dropdown-item" href="#" onClick={(e) => { e.preventDefault(); handleImportant(trashtodo._id); }} >Important</a>
                                                                             <a className="dropdown-item delete" href="#" onClick={(e) => { e.preventDefault(); handleDelete(trashtodo._id) }} >Delete</a>
                                                                             <a className="dropdown-item permanent-delete" href="#" onClick={(e) => { e.preventDefault(); handlePermanentDelete(trashtodo._id) }} >Permanent Delete</a>
-                                                                            <a className="dropdown-item revive" href="#" onClick={(e) => { e.preventDefault(); handleRevive(trashtodo._id) }}>Revive Task</a>
+                                                                            <a className="dropdown-item revive" href="#" onClick={(e) => { e.preventDefault(); handleRevive(trashtodo._id) }}>Revive Plan</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -680,7 +717,7 @@ const AppsToDoList = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x close" data-dismiss="modal"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             <div className="compose-box">
                                 <div className="compose-content" id="addTaskModalTitle">
-                                    <h5 className="">Add Task</h5>
+                                    <h5 className="">Add Plan</h5>
                                     <form>
                                         <div className="row">
                                             <div className="col-md-12">
@@ -732,7 +769,7 @@ const AppsToDoList = () => {
                         </div>
                         <div className="modal-footer">
                             <button className="btn" data-dismiss="modal"><i className="flaticon-cancel-12"></i> Discard</button>
-                            <button className="btn add-tsk" onClick={() => handleSubmit()} >Add Task</button>
+                            <button className="btn add-tsk" onClick={() => handleSubmit()} >Add Plan</button>
                             <button className="btn edit-tsk" onClick={() => handleUpdate()} >Save</button>
                         </div>
                     </div>
@@ -744,4 +781,4 @@ const AppsToDoList = () => {
     )
 }
 
-export default AppsToDoList;
+export default Plan;
