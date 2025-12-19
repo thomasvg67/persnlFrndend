@@ -197,6 +197,18 @@ const Notes = () => {
     }
   };
 
+  const getEmptyMessage = () => {
+    if (filter === 'all') return 'No notes found.';
+    if (filter === 'fav') return 'No favourite notes found.';
+
+    if (filter.startsWith('tag:')) {
+      const tag = filter.split(':')[1];
+      return `No ${tag} notes found.`;
+    }
+
+    return 'No notes found.';
+  };
+
   const validate = () => {
     const newErrors = {};
     if (!title.trim()) newErrors.title = 'Title is required';
@@ -278,28 +290,28 @@ const Notes = () => {
                             </li>
                           </ul>
                           <ul className="nav nav-pills d-block group-list">
-  {[
-    "banking",
-    "agri",
-    "health",
-    "business",
-    "allopathy",
-    "ayurvedam",
-    "homio",
-    "electronics",
-    "software",
-    "general"
-  ].map((t) => (
-    <li className="nav-item" key={t}>
-      <a
-        className={`nav-link list-actions g-dot-${t}`}
-        onClick={() => setFilter(`tag:${t}`)}
-      >
-        {t.charAt(0).toUpperCase() + t.slice(1)}
-      </a>
-    </li>
-  ))}
-</ul>
+                            {[
+                              "banking",
+                              "agri",
+                              "health",
+                              "business",
+                              "allopathy",
+                              "ayurvedam",
+                              "homio",
+                              "electronics",
+                              "software",
+                              "general"
+                            ].map((t) => (
+                              <li className="nav-item" key={t}>
+                                <a
+                                  className={`nav-link list-actions g-dot-${t}`}
+                                  onClick={() => setFilter(`tag:${t}`)}
+                                >
+                                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
 
                         </div>
                       </div>
@@ -307,7 +319,10 @@ const Notes = () => {
 
                     <div id="ct" className="note-container note-grid">
                       {getFilteredNotes().length === 0 ? (
-                        <p>No notes found.</p>
+                        // <p>No notes found.</p>
+                        <p className="text-center text-muted mt-4">
+                          {getEmptyMessage()}
+                        </p>
                       ) : (
                         getFilteredNotes().map(note => (
                           <NoteCard key={note._id} note={note} onDelete={handleRemoveNote} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditNote} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />
@@ -335,35 +350,35 @@ const Notes = () => {
                             <form onSubmit={(e) => e.preventDefault()}>
                               <div className="row">
                                 <div className="col-md-12 mb-2">
-  <label className={`form-label ${errors.title ? 'text-danger' : ''}`}>
-    Title <span className="text-danger">*</span>
-  </label>
-  <input
-    type="text"
-    className={`form-control ${errors.title ? 'border border-danger' : ''}`}
-    placeholder="Title"
-    value={title}
-    onChange={(e) => setTitle(e.target.value)}
-  />
-</div>
+                                  <label className={`form-label ${errors.title ? 'text-danger' : ''}`}>
+                                    Title <span className="text-danger">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={`form-control ${errors.title ? 'border border-danger' : ''}`}
+                                    placeholder="Title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                  />
+                                </div>
                                 <div className="col-md-12 mb-2">
-  <label className={`form-label ${errors.desc ? 'text-danger' : ''}`}>
-    Description <span className="text-danger">*</span>
-  </label>
-  <div className={`${errors.desc ? 'border border-danger rounded' : ''}`}>
-    <CKEditor
-      editor={ClassicEditor}
-      config={{ licenseKey: "GPL" }}
-      data={desc}
-      onReady={(editor) => {
-        // console.log("Notes CKEditor ready!", editor);
-      }}
-      onChange={(event, editor) => {
-        const data = editor.getData();
-        setDescription(data);
-      }}
-    />
-  </div>
+                                  <label className={`form-label ${errors.desc ? 'text-danger' : ''}`}>
+                                    Description <span className="text-danger">*</span>
+                                  </label>
+                                  <div className={`${errors.desc ? 'border border-danger rounded' : ''}`}>
+                                    <CKEditor
+                                      editor={ClassicEditor}
+                                      config={{ licenseKey: "GPL" }}
+                                      data={desc}
+                                      onReady={(editor) => {
+                                        // console.log("Notes CKEditor ready!", editor);
+                                      }}
+                                      onChange={(event, editor) => {
+                                        const data = editor.getData();
+                                        setDescription(data);
+                                      }}
+                                    />
+                                  </div>
 
                                 </div>
                               </div>

@@ -196,6 +196,18 @@ const MyTimeline = () => {
     }
   };
 
+  const getEmptyMessage = () => {
+    if (filter === 'all') return 'No timelines found.';
+    if (filter === 'fav') return 'No favourite timelines found.';
+
+    if (filter.startsWith('tag:')) {
+      const tag = filter.split(':')[1];
+      return `No ${tag} timelines found.`;
+    }
+
+    return 'No timelines found.';
+  };
+
   const validate = () => {
     const newErrors = {};
     if (!title.trim()) newErrors.title = 'Title is required';
@@ -306,7 +318,9 @@ const MyTimeline = () => {
 
                     <div id="ct" className="note-container note-grid">
                       {getFilteredTimelines().length === 0 ? (
-                        <p>No timelines found.</p>
+                        <p className="text-center text-muted mt-4">
+                          {getEmptyMessage()}
+                        </p>
                       ) : (
                         getFilteredTimelines().map(timeline => (
                           <TimelineCard key={timeline._id} timeline={timeline} onDelete={handleRemoveTimeline} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditTimeline} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />

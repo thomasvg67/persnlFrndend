@@ -221,6 +221,29 @@ const PlanQuarterly = () => {
     }
   };
 
+  const getEmptyMessage = () => {
+    if (filter === 'all') {
+      return 'No quarterly plans found.';
+    }
+
+    if (filter === 'fav') {
+      return 'No favourite quarterly plans found.';
+    }
+
+    if (filter.startsWith('q:')) {
+      const q = filter.split(':')[1];
+      return `No ${q}-month quarterly plans found.`;
+    }
+
+    if (filter.startsWith('tag:')) {
+      const tag = filter.split(':')[1];
+      return `No ${tag} quarterly plans found.`;
+    }
+
+    return 'No quarterly plans found.';
+  };
+
+
   const validate = () => {
     const newErrors = {};
     if (!title.trim()) newErrors.title = 'Title is required';
@@ -229,13 +252,6 @@ const PlanQuarterly = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-  // const quarterOptions = [
-  //   { label: "1st Quarter", value: "q1", dot: "banking" },
-  //   { label: "2nd Quarter", value: "q2", dot: "agri" },
-  //   { label: "3rd Quarter", value: "q3", dot: "health" },
-  //   { label: "4th Quarter", value: "q4", dot: "business" }
-  // ];
 
   const quarterOptions = [
     { label: "Done", value: "done", dot: "banking" },
@@ -282,7 +298,7 @@ const PlanQuarterly = () => {
                                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                 </svg> */}
-                                All Plan Qtrs
+                                All  Qaterly Plans
                               </a>
                             </li>
                             <li className="nav-item">
@@ -355,7 +371,9 @@ const PlanQuarterly = () => {
 
                     <div id="ct" className="note-container note-grid">
                       {getFilteredPlanQtrs().length === 0 ? (
-                        <p>No plan Qtrs found.</p>
+                        <p className="text-center text-muted mt-4">
+                          {getEmptyMessage()}
+                        </p>
                       ) : (
                         getFilteredPlanQtrs().map(planQtr => (
                           <PlanQtrCard key={planQtr._id} planQtr={planQtr} onDelete={handleRemovePlanQtr} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditPlanQtr} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />

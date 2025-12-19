@@ -304,7 +304,7 @@ const SharesFollow = () => {
           ],
           pagingType: "simple_numbers",
 
-          ajax: {
+          ajax: { 
             url: `${VITE_BASE_URL}/api/shares`,
             type: 'GET',
             data: function (d) {

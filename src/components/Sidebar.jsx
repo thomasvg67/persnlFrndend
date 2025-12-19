@@ -310,7 +310,7 @@ const Sidebar = () => {
                                 </div>
                             </Link>
                         </li>
-                        <li className={`menu ${expandedMenus.memories ? 'active' : ''}`}>
+                        <li className={`menu ${expandedMenus.memories ? 'active' : ''} ${hasActiveSubItem(['/memris', '/memrisBday', '/memrisWedng', '/memrisDth', '/memrisOthr']) ? 'active' : ''}`}>
                             <a 
                                 href="#memories" 
                                 className="dropdown-toggle"
