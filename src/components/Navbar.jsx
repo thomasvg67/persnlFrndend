@@ -1,14 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Loader from './Loader';
 
 const Navbar = () => {
 
-    const { user } = useContext(AuthContext);
-    const { logout } = useContext(AuthContext);
+    const { user, logout  } = useContext(AuthContext);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const isLargeDevice = () => window.innerWidth >= 992;
 
     const handleLogout = () => {
         setLoading(true); 
@@ -19,19 +20,44 @@ const Navbar = () => {
     };
 
     const handleSidebarToggle = () => {
-  const container = document.getElementById("container");
-  const navbar = document.querySelector(".header-container");
+        const newState = !sidebarOpen;
+        setSidebarOpen(newState);
 
-  if (container.classList.contains("sidebar-closed")) {
-    container.classList.remove("sidebar-closed");
-    container.classList.add("sidebar-open");
-    navbar.classList.add("shifted");
-  } else {
-    container.classList.remove("sidebar-open");
-    container.classList.add("sidebar-closed");
-    navbar.classList.remove("shifted");
-  }
-};
+        const container = document.getElementById("container");
+        const navbar = document.querySelector(".header-container");
+
+        if (newState) {
+            container.classList.remove("sidebar-closed");
+            container.classList.add("sidebar-open");
+            navbar.classList.add("shifted");
+        } else {
+            container.classList.remove("sidebar-open");
+            container.classList.add("sidebar-closed");
+            navbar.classList.remove("shifted");
+        }
+
+        //  Save ONLY for large devices
+        if (isLargeDevice()) {
+            sessionStorage.setItem("sidebarOpen", newState);
+        }
+    };
+
+    useEffect(() => {
+        if (!isLargeDevice()) return; //  mobile/tablet → ignore session
+
+        const savedSidebarState = sessionStorage.getItem("sidebarOpen");
+
+        if (savedSidebarState === "true") {
+            setSidebarOpen(true);
+
+            const container = document.getElementById("container");
+            const navbar = document.querySelector(".header-container");
+
+            container.classList.remove("sidebar-closed");
+            container.classList.add("sidebar-open");
+            navbar.classList.add("shifted");
+        }
+    }, []);
 
 
 

@@ -460,8 +460,11 @@ const BussIdea = () => {
                                             </div>
                                         ))
                                         ) : (
-                                            <div className="text-center mt-4">
-                                                <h5>No data saved</h5>
+                                            <div
+                                                className="d-flex justify-content-center align-items-center text-center"
+                                                style={{ minHeight: '60vh', minWidth: '150vh' }}
+                                            >
+                                                <h5 className="text-muted">No Data saved</h5>
                                             </div>
                                         )}
                                 </div>

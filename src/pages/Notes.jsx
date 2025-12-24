@@ -317,12 +317,15 @@ const Notes = () => {
                       </div>
                     </div>
 
-                    <div id="ct" className="note-container note-grid">
+                    <div id="ct" className={`note-container note-grid ${getFilteredNotes().length === 0
+                      ? 'd-flex justify-content-center align-items-center'
+                      : ''
+                      }`}
+                      style={{ minHeight: '60vh' }}>
                       {getFilteredNotes().length === 0 ? (
-                        // <p>No notes found.</p>
-                        <p className="text-center text-muted mt-4">
+                        <h5 className="text-center text-muted ">
                           {getEmptyMessage()}
-                        </p>
+                        </h5>
                       ) : (
                         getFilteredNotes().map(note => (
                           <NoteCard key={note._id} note={note} onDelete={handleRemoveNote} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditNote} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />

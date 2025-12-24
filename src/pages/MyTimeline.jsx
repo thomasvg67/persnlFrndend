@@ -316,11 +316,14 @@ const MyTimeline = () => {
                       </div>
                     </div>
 
-                    <div id="ct" className="note-container note-grid">
+                    <div id="ct" className={`note-container note-grid ${getFilteredTimelines().length === 0
+                        ? 'd-flex justify-content-center align-items-center'
+                        : ''
+                      }`}>
                       {getFilteredTimelines().length === 0 ? (
-                        <p className="text-center text-muted mt-4">
+                        <h5 className="text-center text-muted mt-4">
                           {getEmptyMessage()}
-                        </p>
+                        </h5>
                       ) : (
                         getFilteredTimelines().map(timeline => (
                           <TimelineCard key={timeline._id} timeline={timeline} onDelete={handleRemoveTimeline} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditTimeline} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />

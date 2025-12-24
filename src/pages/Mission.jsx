@@ -448,8 +448,14 @@ const Mission = () => {
                                             </div>
                                         ))
                                         ) : (
-                                            <div className="text-center mt-4">
-                                                <h5>No Mission saved</h5>
+                                            // <div className="text-center mt-4">
+                                            //     <h5>No Mission saved</h5>
+                                            // </div>
+                                            <div
+                                                className="d-flex justify-content-center align-items-center text-center"
+                                                style={{ minHeight: '60vh', minWidth: '150vh' }}
+                                            >
+                                                <h5 className="text-muted">No Mission saved</h5>
                                             </div>
                                         )}
                                 </div>

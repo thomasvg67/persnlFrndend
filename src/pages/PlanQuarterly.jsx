@@ -369,11 +369,14 @@ const PlanQuarterly = () => {
                       </div>
                     </div>
 
-                    <div id="ct" className="note-container note-grid">
+                    <div id="ct" className={`note-container note-grid ${getFilteredPlanQtrs().length === 0
+                        ? 'd-flex justify-content-center align-items-center'
+                        : ''
+                      }`}>
                       {getFilteredPlanQtrs().length === 0 ? (
-                        <p className="text-center text-muted mt-4">
+                        <h5 className="text-center text-muted mt-4">
                           {getEmptyMessage()}
-                        </p>
+                        </h5>
                       ) : (
                         getFilteredPlanQtrs().map(planQtr => (
                           <PlanQtrCard key={planQtr._id} planQtr={planQtr} onDelete={handleRemovePlanQtr} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditPlanQtr} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />

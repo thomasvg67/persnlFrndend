@@ -301,9 +301,12 @@ const BudgetQuarterly = () => {
                       </div>
                     </div>
 
-                    <div id="ct" className="note-container note-grid">
+                    <div id="ct" className={`note-container note-grid ${getFilteredBudgetQtrs().length === 0
+                        ? 'd-flex justify-content-center align-items-center'
+                        : ''
+                      }`}>
                       {getFilteredBudgetQtrs().length === 0 ? (
-                        <p>No budget Qtrs found.</p>
+                        <h5>No budget Qtrs found.</h5>
                       ) : (
                         getFilteredBudgetQtrs().map(budgetQtr => (
                           <BudgetQtrCard key={budgetQtr._id} budgetQtr={budgetQtr} onDelete={handleRemoveBudgetQtr} onToggleFav={handleFavToggle} onTagChange={handleTagChange} onEdit={handleEditBudgetQtr} setLoading={(loader) => setLoading(prev => ({ ...prev, action: loader }))} />
